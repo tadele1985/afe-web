@@ -1,0 +1,63 @@
+{% load i18n %}
+{% if resource %}
+  <label class="label p-0 mt-4">
+    <span class="text-base label-text">{% trans "Resources" %}</span>
+  </label>
+  <table class="table">
+    <thead>
+      <th>{% trans "Resources" %}</th>
+      <th>{% trans "Work norm" %}</th>
+      <th>{% trans "Planned achievement" %}</th>
+      <th>{% trans "Payment" %}</th>
+      <th>{% trans "Cost in birr" %}</th>
+    </thead>
+    <tbody id="resource-set">
+    </tbody>
+  </table>
+  <button hx-get="{% url 'core:get_resource_form' %}?activity_plan={{ activity_plan }}"
+          hx-swap="beforeend"
+          hx-target="#resource-set"
+          class="mt-4 btn-sm underline">{% trans "Add a resource" %}</button>
+{% endif %}
+{% if input %}
+  <label class="label">
+    <span class="text-base label-text">{% trans "Inputs" %}</span>
+  </label>
+  <table class="table">
+    <thead>
+      <th>{% trans "Resources" %}</th>
+      <th>{% trans "Work norm" %}</th>
+      <th {% trans ">Planned achievement" %}
+      </th>
+      <th {% trans ">Payment" %}
+      </th>
+      <th>{% trans "Cost in birr" %}</th>
+    </thead>
+    <tbody id="input-set">
+    </tbody>
+  </table>
+  <button hx-get="{% url 'core:get_input_form' %}?activity_plan={{ activity_plan }}"
+          hx-swap="beforeend"
+          hx-target="#input-set"
+          class="mt-4 btn-sm underline">{% trans "Add input" %}</button>
+{% endif %}
+{% if tool %}
+  <label class="label">
+    <span class="text-base label-text">{% trans "Tools" %}</span>
+  </label>
+  <table class="table">
+    <thead>
+      <th>{% trans "Resources" %}</th>
+      <th>{% trans "Work norm" %}</th>
+      <th>{% trans "Planned achievement" %}</th>
+      <th>{% trans "Payment" %}</th>
+      <th>{% trans "Cost in birr" %}</th>
+    </thead>
+    <tbody id="tool-set">
+    </tbody>
+  </table>
+  <button hx-get="{% url 'core:get_tool_form' %}?activity_plan={{ activity_plan }}"
+          hx-swap="beforeend"
+          hx-target="#tool-set"
+          class="mt-4 btn-sm underline">{% trans "Add a tool" %}</button>
+{% endif %}

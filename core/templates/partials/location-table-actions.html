@@ -1,0 +1,10 @@
+{% load i18n %}
+<div class="space-x-2">
+  <button hx-get="{% url "core:update_location" pk=id %}"
+          hx-target="#editLocation"
+          hx-swap="outerHTML"
+          @click="showEdit = true"
+          class="link link-accent">{% trans "Edit" %}</button>
+  <a href="{% url "core:location_detail" pk=id %}"
+     class="link link-accent">{% trans "View Details" %}</a>
+</div>

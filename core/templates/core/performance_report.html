@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load render_table from django_tables2 %}
+{% block title %}
+  Performance Report
+{% endblock title %}
+{% block javascript %}
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock javascript %}
+{% block content %}
+  <style>
+    .choices {
+        width: 300px;
+        margin-bottom: 8px;
+    }
+  </style>
+  <div x-data="{showEdit: false}">
+    <h2 class="text-lg font-bold">{% trans "Performance Report" %}</h2>
+    <form method="get" class="mt-5 gap-2 items-center">
+      <label for="sector">{% trans "Sector" %}:</label>
+      <select name="sector" class="select select-bordered mr-4">
+        <option value="">{% trans "Select Sector" %}</option>
+        {% for type in sectors %}
+          <option value="{{ type.id }}"
+                  {% if type.id|stringformat:"s" == sector %}selected{% endif %}>{{ type.name }}</option>
+        {% endfor %}
+      </select>
+      <label for="operation">{% trans "Operation" %}:</label>
+      <select name="operation" class="select select-bordered mr-4">
+        <option value="">{% trans "Select Operation" %}</option>
+        {% for type in operations %}
+          <option value="{{ type.id }}"
+                  {% if type.id|stringformat:"s" == operation %}selected{% endif %}>{{ type.name }}</option>
+        {% endfor %}
+      </select>
+      <label for="location">{% trans "Location" %}:</label>
+      <select name="location" class="select select-bordered">
+        <option value="">{% trans "Select Location" %}</option>
+        {% for type in locations %}
+          <option value="{{ type.id }}"
+                  {% if type.id|stringformat:"s" == location %}selected{% endif %}>{{ type.name }}</option>
+        {% endfor %}
+      </select>
+      <label for="detail_activity_type">{% trans "Detail Activity" %}:</label>
+      <select name="detail_activity_type" class="select select-bordered">
+        <option value="">{% trans "Select Detail Activity" %}</option>
+        {% for type in detail_types %}
+          <option value="{{ type.id }}"
+                  {% if type.id|stringformat:"s" == detail_activity_type %}selected{% endif %}>{{ type.name }}</option>
+        {% endfor %}
+      </select>
+      <label for="report_type">{% trans "Report Type" %}:</label>
+      <select name="report_type" class="select select-bordered">
+        <option value="">{% trans "Select Report Type" %}</option>
+        <option value="monthly" {% if report_type == "monthly" %}selected{% endif %}>{% trans "Monthly" %}</option>
+        <option value="quarterly"
+                {% if report_type == "quarterly" %}selected{% endif %}>{% trans "Quarterly" %}</option>
+        <option value="yearly" {% if report_type == "yearly" %}selected{% endif %}>{% trans "Yearly" %}</option>
+      </select>
+      <input type="submit" class="btn btn-neutral" value="Filter">
+      <a href="{% url "core:performance_report" %}" class="btn btn-outline">{% trans "Clear" %}</a>
+    </form>
+    <div class="mt-10 overflow-x-auto">
+      <div class="relative overflow-x-auto">
+        <div id="chart"></div>
+        <script>
+                    var options = {
+                        chart: {
+                            type: 'bar',
+                            width: '800px'
+                        },
+                        series: [
+                            {
+                                name: 'Plan',
+                                data: [{% for key, item in report_data.months.items %}{{ item.planned }},{% endfor %}]
+                            },
+                            {
+                                name: 'Actual',
+                                data: [{% for key, item in report_data.months.items %}{{ item.value }},{% endfor %}]
+                            },
+                        ],
+                        xaxis: {
+                            categories: [{% for key, item in report_data.months.items %}'{{ key }}',{% endfor %}]
+                        },
+                        yaxis: {
+                            labels: {
+                                maxWidth: 500
+                            }
+                        }
+                    }
+
+                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+                    chart.render();
+
+                  const elements = document.querySelectorAll('.drawer-content select');
+                  for (const element of elements) {
+                      new Choices(element);
+                  }
+        </script>
+      </div>
+    </div>
+  </div>
+{% endblock %}

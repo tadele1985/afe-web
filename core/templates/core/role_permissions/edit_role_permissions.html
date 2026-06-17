@@ -1,0 +1,19 @@
+{% load i18n %}
+<form action="{% url 'core:edit_role_permissions' id=group.id %}" method="post" data-url="" class="create-form">
+    {% csrf_token %}
+    <div class="flex-1 flex flex-col gap-2 h-full">
+        {% if error %}
+        <div class="alert alert-danger text-center" role="alert">
+            {% for field, error in error.items %}
+                {{ error | striptags }}
+                <br>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <h1 class="font-bold text-lg">{% trans "Edit Role" %}</h1>
+        {{ form }}
+    </div>
+    <div class="flex justify-between gap-4 py-4">
+        <input type="submit" class="btn btn-neutral flex-1" value='{% trans "Submit" %}'>
+    </div>
+</form>

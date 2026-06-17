@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}Form Submission List{% endblock %}
+{% block content %}
+<div x-data="{show: false, viewDetail: false}">
+    <div class="flex justify-between">
+        <h2 class="text-lg font-bold">
+            {% trans "Form Submission List" %}
+        </h2>
+    </div>
+    <div>
+        {% render_table table %}
+    </div>
+    {% #sidebar open="viewDetail" override_whole=True override_whole_id="viewDetail" %}
+    {% /sidebar %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% load i18n %}
+<div
+     x-data="{createUser: false}">
+    <button hx-get="{% url "core:form_submission_detail" uuid=id %}"
+            hx-target="#viewDetail"
+            hx-swap="innerHTML"
+            class="btn btn-link"
+            @click="viewDetail = true">{% trans "View Detail" %}</button>
+</div>

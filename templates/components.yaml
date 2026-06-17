@@ -1,0 +1,6 @@
+components:
+  tabbar: "components/tabbar.html"
+  tab: "components/tab.html"
+  baretab: "components/baretab.html"
+  sidebar: "components/sidebar.html"
+  baresidebar: "components/baresidebar.html"

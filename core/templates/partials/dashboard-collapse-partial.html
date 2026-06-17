@@ -1,0 +1,34 @@
+<div class="flex gap-2 items-center hover:cursor-pointer"
+     @click="{{ operation.codified_name }} =  !{{ operation.codified_name }}">
+    <i class="w-4 h-4"
+       data-lucide="chevron-down"
+       x-show="!{{ operation.codified_name }}"></i>
+    <i class="w-4 h-4"
+       data-lucide="chevron-up"
+       x-show="{{ operation.codified_name }}"></i>
+    <p>
+        {% if operation.children %}{% endif %}
+        {{ operation.name }}
+    </p>
+</div>
+<p>{{ operation.todo_tasks }}</p>
+<p>{{ operation.in_progress_tasks }}</p>
+<p>{{ operation.done_tasks }}</p>
+<p>{{ operation.completion_percentage }}%</p>
+{% for child_operation in operation.children %}
+    <template x-if="{{ operation.codified_name }}">
+        <p x-show="{{ operation.codified_name }}" class="ml-6">{{ child_operation.name }}</p>
+    </template>
+    <template x-if="{{ operation.codified_name }}">
+        <p x-show="{{ operation.codified_name }}">{{ child_operation.todo_tasks }}</p>
+    </template>
+    <template x-if="{{ operation.codified_name }}">
+        <p x-show="{{ operation.codified_name }}">{{ child_operation.in_progress_tasks }}</p>
+    </template>
+    <template x-if="{{ operation.codified_name }}">
+        <p x-show="{{ operation.codified_name }}">{{ child_operation.done_tasks }}</p>
+    </template>
+    <template x-if="{{ operation.codified_name }}">
+        <p x-show="{{ operation.codified_name }}">{{ child_operation.completion_percentage|floatformat:2 }}%</p>
+    </template>
+{% endfor %}

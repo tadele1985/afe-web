@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+    Actual Activity Resource
+{% endblock title %}
+{% block content %}
+    {% include "partials/breadcrumb.html" with breadcrumbs=breadcrumbs %}
+    <div x-data="{open: false}">
+        <h1 class="font-bold text-2xl">
+            {{ resource.resource_type.type|lower|capfirst }} - {{ resource.resource_type.name }}
+        </h1>
+        <div class="flex gap-4 items-center mt-10">
+            <h3 class="font-semibold text-lg">Resource name</h3>
+            <p>{{ resource.resource_type.name }}</p>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="table mt-10">
+                <thead>
+                    <tr>
+                        <th colspan="2"></th>
+                        <th>
+                            {% trans "Work norm" %}
+                            <br>
+                            ({{ resource.resource_type.norm_unit }})
+                        </th>
+                        <th>
+                            {% trans "Planned achievement" %}
+                            <br>
+                            ({{ resource.resource_type.achievment_unit }})
+                        </th>
+                        <th>
+                            {% trans "Payment" %}
+                            <br>
+                            ({{ resource.resource_type.payment_unit }})
+                        </th>
+                        <th>{% trans "Cost in birr" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <tr>
+                        <td colspan="2">
+                            <span class="text-xs">{% trans "Planned" %}</span>
+                        </td>
+                        <td>{{ resource.work_norm }}</td>
+                        <td>{{ resource.achievement }}</td>
+                        <td>{{ resource.payment }}</td>
+                        <td>{{ resource.get_cost }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="table mt-10">
+                <thead>
+                    <tr>
+                        <th>{% trans "Date of actual achievements" %}</th>
+                        <th>{% trans "No of person" %}</th>
+                        <th>
+                            {% trans "Actual achievement" %}
+                            <br>
+                            ({{ resource.resource_type.achievment_unit }})
+                        </th>
+                        <th>
+                            {% trans "Actual payment" %}
+                            <br>
+                            ({{ resource.resource_type.payment_unit }})
+                        </th>
+                        <th>{% trans "Cost in birr" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-base-300 text-white">
+                    {% for activity in resource.actual_activities.all %}
+                        <tr>
+                            <td>{{ activity.createdDate|date:"M, d, Y" }}</td>
+                            <td>{{ activity.work_norm }}</td>
+                            <td>{{ activity.achievement }}</td>
+                            <td>{{ activity.payment }}</td>
+                            <td>{{ activity.get_cost }}</td>
+                            <td>
+                                <button class="btn btn-link btn-accent"
+                                        hx-get="{% url 'core:edit_actual_activity_resource' pk=activity.id %}"
+                                        hx-target="#editActual"
+                                        @click="open = true">{% trans "Update" %}</button>
+                                <a href="{% url 'core:edit_actual_activity_resource' pk=activity.id %}"></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-10">
+            <div>
+                <p>{% trans "Total Completion percentage" %}</p>
+                <progress class="progress progress-neutral w-1/2" value={{ resource.completion_rate }} max="100"></progress>
+                <span>{{ resource.completion_rate }}%</span>
+            </div>
+            <div>
+                <p>{% trans "Total Utilization Percentage" %}</p>
+                <progress class="progress progress-neutral w-1/2" value={{ resource.utilization_rate }} max="100"></progress>
+                <span>{{ resource.utilization_rate }}%</span>
+            </div>
+            <div>
+                <p>{% trans "Total Cost Utilization Percentage" %}</p>
+                <progress class="progress progress-neutral w-1/2"
+                          value="{{ resource.cost_utilization_rate }}"
+                          max="100"></progress>
+                <span>{{ resource.cost_utilization_rate }}</span>
+            </div>
+        </div>
+        {% #sidebar open="open" override_whole=True override_whole_id="editActual" %}
+        {% /sidebar %}
+    </div>
+{% endblock content %}

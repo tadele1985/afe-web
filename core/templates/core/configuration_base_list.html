@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+{% block title %}
+  {{ title }}
+{% endblock title %}
+{% block content %}
+  <div x-data="{showCreate: false, showEdit: false}">
+    <div class="flex justify-between mb-5">
+      <h2 class="text-lg font-bold">{{ title }}</h2>
+      {% if entity_name == 'Location' %}
+      <form method="GET" action="/export/locations">
+        Location Type:
+        <select name="location_type" class="mr-6 select select-bordered">
+          <option value="HQ">HQ</option>
+          <option value="BRANCH">Branch</option>
+          <option value="NURSERY">Nursery</option>
+          <option value="FOREST_ESTABLISTMENT">Forest Establishment</option>
+          <option value="SAWMILL">Sawmill</option>
+          <option value="SEED_SOURCE">Seed Source</option>
+          <option value="FOREST_SITE">Forest Site</option>
+          <option value="BLOCK">Block</option>
+          <option value="COMPARTMENT">Compartment</option>
+          <option value="SUB_COMPARTMENT">Sub Compartment</option>
+        </select>
+        <input class="btn btn-neutral" type="submit" value="Export" />
+      </form>
+      {% endif %}
+      <button class="btn btn-neutral" @click="showCreate = true">
+        {% if entity_name.0 in 'aeiouAEIOU' %}
+          Create an {% trans entity_name %}
+        {% else %}
+          Create a {% trans entity_name %}
+        {% endif %}
+      </button>
+    </div>
+    <form method="get"
+      class="flex gap-2 items-center mx-4">
+        Name: 
+        <input 
+            type="text" 
+            name="name" 
+            id="name" 
+            class="input input-bordered w-full max-w-xs" 
+            placeholder="Enter name" 
+            value="{{ request.GET.name }}"
+        />
+      <input type="submit" class="btn btn-neutral" value="Filter">
+    </form>
+    <div>{% render_table table %}</div>
+    {% #sidebar open="showCreate" method="post" raw_action=action %}
+    {% csrf_token %}
+    <h1 class="font-bold text-lg">{% trans "Create" %} {{ entity_name }}</h1>
+    {{ form }}
+    {% /sidebar %}
+    {% #sidebar open="showEdit" override_whole=True override_whole_id="editSector" %}
+    {% /sidebar %}
+  </div>
+{% endblock %}

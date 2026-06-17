@@ -1,0 +1,48 @@
+{% load static %}
+{% load i18n %}
+{% if form %}
+    {% if form.media %}{{ form.media }}{% endif %}
+{% endif %}
+
+<form class="flex flex-col px-4 h-full"
+      hx-post="{% url 'core:activity_plan_detail' uuid=form.initial.activity_plan %}"
+      hx-target="#add-detail-activity"
+      hx-swap="outerHTML"
+      id="add-detail-activity"
+      >
+    {% csrf_token %}
+    <div class="flex-1 flex flex-col gap-2">
+        {% if form.non_field_errors %}
+          {% for error in form.non_field_errors %}
+            <div class="alert alert-error">{{ error }}</div>
+          {% endfor %}
+        {% endif %}
+        <h1 class="font-bold text-lg">{% trans "Add Detail Activity" %}</h1>
+        {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+        {% for field in form.visible_fields %}
+            {% for error in field.errors %}
+              <div class="alert alert-error">{{ error }}</div>
+            {% endfor %}
+            {% if field.use_fieldset %}
+                <fieldset class="flex gap-2">
+                    {% if field.label %}{{ field.legend_tag }}{% endif %}
+                    {{ field }}
+                </fieldset>
+            {% else %}
+                {{ field.label_tag }}
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+        <div id="resource-forms"></div>
+    </div>
+    {# <script> #}
+    {#     let start_date = "{{ form.plan.start_date|date:"Y-m-d" }}" #}
+    {#     let end_date = "{{ form.plan.end_date|date:"Y-m-d" }}" #}
+    {#     document.getElementById('id_detail-start_date').value = start_date; #}
+    {#     document.getElementById('id_detail-end_date').value = end_date; #}
+    {# </script> #}
+    <input type="submit"
+           class="btn btn-neutral w-64 mt-10 self-center"
+           style="margin-bottom: 5px"
+           value="Submit" />
+</form>

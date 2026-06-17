@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% block title %}Operation Plan Overview{% endblock %}
+{% block javascript %}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css"
+          rel="stylesheet"
+          type="text/css">
+    <script src="{% static 'modal.js' %}" defer></script>
+    <style>
+        .py-4 {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        .px-6 {
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div x-data="{show: false}">
+        <div class="flex justify-between">
+            <h2 class="text-lg font-bold">{% trans "Operation plans" %}</h2>
+            <div>
+              <button class="btn btn-neutral btn-md mr-2" @click="show = true">{% trans "Create a Plan" %}</button>
+            </div>
+        </div>
+        <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200">
+            <ul class="flex flex-wrap -mb-px">
+                <li class="me-2">
+                    <a href="{% url 'core:operation_plan_overview' %}?plan_type=past"
+                      class=" {% if plan_type == "past" %} inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active {% else %} inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 {% endif %} ">{% trans "Past Plans" %}</a>
+                </li>
+                <li class="me-2">
+                    <a href="{% url 'core:operation_plan_overview' %}?plan_type=current"
+                       class=" {% if plan_type == "current" %} inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active {% else %} inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 {% endif %} "
+                       aria-current="page">{% trans "Current Plans" %}</a>
+                </li>
+                <li class="me-2">
+                    <a href="{% url 'core:operation_plan_overview' %}?plan_type=future"
+                      class=" {% if plan_type == "future" %} inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active {% else %} inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 {% endif %} ">{% trans "Future Plans" %}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="mt-10 overflow-x-auto">
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead>
+                        <tr class="bg-white border-b">
+                            <th scope="row"
+                                rowspan="{{ rowspan }}"
+                                class="px-6 py-4 underline cursor-pointer font-medium text-blue-600 whitespace-nowrap">
+                                {% if plan_type == "current" %}
+                                <a href="{% url 'core:home' %}?year={{ current_year }}">{% trans "All operation plans list" %}</a>
+                                {% elif plan_type == "past" %}
+                                <a href="{% url 'core:home' %}?year__lte={{ current_year }}">{% trans "All operation plans list" %}</a>
+                                {% else %}
+                                <a href="{% url 'core:home' %}?year__gt={{ current_year }}">{% trans "All operation plans list" %}</a>
+                                {% endif %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <thead class="text-xs text-black uppercase bg-gray-100">
+                        <tr>
+                          <th scope="col" class="px-6 py-4">{% trans "Sector" %}</th>
+                          <th scope="col" class="px-6 py-4">{% trans "Operation" %}</th>
+                          <th scope="col" class="px-6 py-4">{% trans "Number of plans" %}</th>
+                          <th scope="col" class="px-6 py-4">{% trans "Year" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sector, values in group_operation_plans.items %}
+                            {% calculate_sector_rowspan values.operations as rowspan %}
+                            <tr class="bg-white border-b">
+                                <th scope="row"
+                                    rowspan="{{ rowspan }}"
+                                    class="px-6 py-4 underline cursor-pointer font-medium text-gray-900 whitespace-nowrap">
+                                    {% if plan_type == "current" %}
+                                        <a href="{% url 'core:home' %}?sector={{ values.id }}&year={{ current_year }}">{{ sector }}</a>
+                                    {% elif plan_type == "past" %}
+                                        <a href="{% url 'core:home' %}?sector={{ values.id }}&year__lt={{ current_year }}">{{ sector }}</a>
+                                    {% else %}
+                                        <a href="{% url 'core:home' %}?sector={{ values.id }}&year__gt={{ current_year }}">{{ sector }}</a>
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            {% for operation, value in values.operations.items %}
+                                {% for year, year_value in value.items %}
+                                    <tr class="bg-white border-b text-black">
+                                        <td class="px-6 py-4">{{ operation }}</td>
+                                        <td class="px-6 py-4">{{ year_value.number_of_plans }}</td>
+                                        <td class="px-6 py-4">{{ year }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% #sidebar open="show" action="core:home" method="post" form="opertaion_plan" %}
+        {% csrf_token %}
+        {{ form }}
+        <div id="location_form"></div>
+        {% /sidebar %}
+    </div>
+{% endblock %}

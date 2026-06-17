@@ -1,0 +1,65 @@
+<tr id="resource-forms-{{ form.instance.id }}">
+    <td class="hidden">
+        {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+    </td>
+    <input type="hidden"
+           value="{{ formula_type }}"
+           id="formula-{{ form.instance.id }}" />
+    <td>{{ form.resource_type }}</td>
+    <td>
+        <div class="">
+            {{ form.work_norm }}
+            {% if units.0 %}
+                <span class="bg-base-300 p-2.5 rounded-b-lg overflow-hidden block text-white"
+                      style="width: 178px;
+                             height: fit-content;
+                             border-radius: 0px 0px 5px 5px">/{{ units.0 }}</span>
+            {% endif %}
+        </div>
+    </td>
+    <td>
+        {{ form.achievement }}
+        {% if units.1 %}
+            <span class="bg-base-300 p-2.5 rounded-b-lg overflow-hidden block text-white"
+                  style="width: 178px;
+                         height: fit-content;
+                         border-radius: 0px 0px 5px 5px">/{{ units.1 }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {{ form.payment }}
+        {% if units.2 %}
+            <span class="bg-base-300 p-2.5 rounded-b-lg overflow-hidden block text-white"
+                  style="width: 178px;
+                         height: fit-content;
+                         border-radius: 0px 0px 5px 5px">/{{ units.2 }}</span>
+        {% endif %}
+    </td>
+    <td id="calculated_label"
+        class="text-center"
+        hx-trigger="load"
+        hx-get="{% url 'core:get_cost' %}"
+        hx-swap="innerHTML"
+        hx-target="this"
+        hx-include="#resource-forms-{{ form.instance.id }} input, #resource-forms-{{ form.instance.id }} select">0</td>
+    <td class="my-4">
+        <button onclick="removeParent(event)" class="btn btn-error btn-sm text-xl">&times;</button>
+    </td>
+</tr>
+{% comment %}
+<div class="flex flex-col">
+    {% with "work_norm achievement payment resource_type" as list %}
+        {% with list.split as exclude_list %}
+            {% for field in form %}
+                {% if field.name not in exclude_list and not field.is_hidden %}{{ field.as_field_group }}{% endif %}
+            {% endfor %}
+        {% endwith %}
+    {% endwith %}
+</div>
+{% endcomment %}
+<script>
+        function removeParent(event) {
+          event.preventDefault();
+          event.target.parentElement.parentElement.remove();
+        }
+</script>

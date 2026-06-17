@@ -1,0 +1,9 @@
+<div class="flex flex-wrap gap-2 mb-4">
+    {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+    {% for field in form.visible_fields %}
+        <div class="flex items-center gap-2">
+            {{ field.label_tag }}
+            {{ field }}
+        </div>
+    {% endfor %}
+</div>

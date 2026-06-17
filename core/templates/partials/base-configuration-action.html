@@ -1,0 +1,8 @@
+{% load i18n %}
+<div>
+  <button hx-get="{{ url }}"
+          hx-target="#editSector"
+          hx-swap="innerHTML"
+          class="btn btn-link"
+          @click="showEdit = true">{% trans "Edit" %}</button>
+</div>

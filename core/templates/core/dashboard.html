@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block statics %}
+    <style>
+    .choices {
+      width: 20rem;
+    }
+    </style>
+{% endblock statics %}
+
+{% block content %}
+    <div class="mb-10">
+        <h1 class="font-bold text-lg text-center">{% trans "Product Sales" %}</h1>
+        <form method="get"
+      action="{% url 'core:dashboard' %}"
+      class="flex flex-wrap gap-4 w-full items-end my-4">
+
+    <!-- Location Type -->
+    <div class="flex flex-col gap-1">
+        {{ form.location_type.label_tag }}
+        {{ form.location_type }}
+    </div>
+
+    <!-- Location -->
+    <div class="flex flex-col gap-1">
+        {{ form.location.label_tag }}
+        {{ form.location }}
+    </div>
+
+    <!-- Start Date -->
+    <div class="flex flex-col gap-1">
+        {{ form.start_date.label_tag }}
+        <div style="display:flex;align-items:center;gap:4px;">
+            {{ form.start_date }}
+            <button type="button" id="btn_start_date"
+                style="background:none;border:1px solid #ccc;border-radius:6px;
+                       padding:4px 8px;cursor:pointer;font-size:16px;"
+                title="{% trans 'Pick start date' %}">
+                &#128197;
+            </button>
+        </div>
+    </div>
+
+    <!-- End Date -->
+    <div class="flex flex-col gap-1">
+        {{ form.end_date.label_tag }}
+        <div style="display:flex;align-items:center;gap:4px;">
+            {{ form.end_date }}
+            <button type="button" id="btn_end_date"
+                style="background:none;border:1px solid #ccc;border-radius:6px;
+                       padding:4px 8px;cursor:pointer;font-size:16px;"
+                title="{% trans 'Pick end date' %}">
+                &#128197;
+            </button>
+        </div>
+    </div>
+
+    <input type="submit" value='{% trans "Filter" %}' class="btn btn-primary">
+    <a href="{% url 'core:dashboard' %}" class="btn btn-outline">{% trans "Clear" %}</a>
+</form>
+        <canvas id="incomeChart"></canvas>
+    </div>
+    <div>
+        <h1 class="font-bold text-lg text-center">{% trans "Products in Store vs Sold" %}</h1>
+        <form method="get"
+              action="{% url 'core:dashboard' %}"
+              class="flex gap-4 w-full max-w-xs items-center my-4">
+            <div class="flex gap-2">
+                <label for="product_name" class="label">
+                    <span class="label-text">{% trans "Product" %}</span>
+                </label>
+                <select class="select select-bordered w-24" name="product_name">
+                    {% for product_name in product_names %}
+                        <option value="{{ product_name }}"
+                                {% if product_name == selected_product_name %}selected{% endif %}>
+                            {{ product_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" value="Filter" class="btn btn-primary">
+        </form>
+        <canvas id="myChart"></canvas>
+    </div>
+    <div class="mt-5 flex flex-col">
+        <h1 class="font-bold text-lg p-2 text-accent-content text-center">{% trans "Activity and Performance" %}</h1>
+        <div class="stats stats-vertical lg:stats-horizontal shadow my-4 m-auto">
+            {% for name, value in aggregate_performance.items %}
+                <div class="stat">
+                    <div class="stat-title">{{ name.title }}</div>
+                    <div class="stat-value">{{ value }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <div>
+            <canvas id="monthPerformance"></canvas>
+        </div>
+        <div class="grid grid-cols-5 w-full p-4 rounded glass text-sm gap-2" x-data="{
+            {% for operation in activity_performance %}'{{ operation.codified_name }}': false,{% endfor %}
+            }">
+            <h3 class="font-bold text-accent-content mb-4">{% trans "Operations" %}</h3>
+            <h3 class="font-bold text-accent-content mb-4">{% trans "Todo Tasks" %}</h3>
+            <h3 class="font-bold text-accent-content mb-4">{% trans "In Progress Tasks" %}</h3>
+            <h3 class="font-bold text-accent-content mb-4">{% trans "Done Tasks" %}</h3>
+            <h3 class="font-bold text-accent-content mb-4">% {% trans "completion" %}</h3>
+            {% for operation in activity_performance %}
+                {% include "partials/dashboard-collapse-partial.html" with operation=operation %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block body_end %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // ── Ethiopian date utilities ──────────────────────────────────────────
+      const ETH_MONTHS = [
+        "መስከረም","ጥቅምት","ህዳር","ታህሳስ","ጥር","የካቲት",
+        "መጋቢት","ሚያዝያ","ግንቦት","ሰኔ","ሐምሌ","ነሃሴ","ጳጉሜ"
+      ];
+
+      function gregorianToJDN(y, m, d) {
+        return Math.floor((1461 * (y + 4800 + Math.floor((m - 14) / 12))) / 4)
+          + Math.floor((367 * (m - 2 - 12 * Math.floor((m - 14) / 12))) / 12)
+          - Math.floor((3 * Math.floor((y + 4900 + Math.floor((m - 14) / 12)) / 100)) / 4)
+          + d - 32075;
+      }
+
+      function ethiopianToJDN(y, m, d) {
+        return Math.floor(1723856 + 365 * (y - 1) + Math.floor(y / 4) + 30 * (m - 1) + d - 1);
+      }
+
+      function jdnToEthiopian(jdn) {
+        const r = (jdn - 1723856) % 1461;
+        const n = r % 365 + 365 * Math.floor(r / 1460);
+        const y = Math.floor((jdn - 1723856) / 1461) * 4 + Math.floor(r / 365) - Math.floor(r / 1460);
+        const m = Math.floor(n / 30) + 1;
+        const d = n % 30 + 1;
+        return { year: y, month: m, day: d };
+      }
+
+      function jdnToGregorian(jdn) {
+        let l = jdn + 68569, n = Math.floor((4 * l) / 146097);
+        l = l - Math.floor((146097 * n + 3) / 4);
+        let i = Math.floor((4000 * (l + 1)) / 1461001);
+        l = l - Math.floor((1461 * i) / 4) + 31;
+        let j = Math.floor((80 * l) / 2447);
+        const d = l - Math.floor((2447 * j) / 80);
+        l = Math.floor(j / 11);
+        const m = j + 2 - 12 * l;
+        const y = 100 * (n - 49) + i + l;
+        return { year: y, month: m, day: d };
+      }
+
+      function toEthiopian(gy, gm, gd) {
+        return jdnToEthiopian(gregorianToJDN(gy, gm, gd));
+      }
+
+      function toGregorian(ey, em, ed) {
+        return jdnToGregorian(ethiopianToJDN(ey, em, ed));
+      }
+
+      function formatEth(y, m, d) {
+        return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      }
+
+      // ── Ethiopian date picker popup ───────────────────────────────────────
+      function buildPicker(inputEl) {
+        let current;
+        const val = inputEl.value;
+        if (val && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+          const [y, m, d] = val.split('-').map(Number);
+          current = { year: y, month: m, day: d };
+        } else {
+          const t = new Date();
+          current = toEthiopian(t.getFullYear(), t.getMonth() + 1, t.getDate());
+        }
+
+        document.querySelectorAll('.eth-picker').forEach(p => p.remove());
+
+        const picker = document.createElement('div');
+        picker.className = 'eth-picker';
+        picker.style.cssText = `
+          position:absolute; z-index:1000; background:white; border:1px solid #ccc;
+          border-radius:8px; padding:12px; box-shadow:0 4px 16px rgba(0,0,0,0.15);
+          min-width:260px; font-family:inherit;
+        `;
+
+        function render() {
+          picker.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <button type="button" id="eth-prev" style="background:none;border:none;cursor:pointer;font-size:18px;">&#8249;</button>
+              <div>
+                <select id="eth-month-sel" style="border:1px solid #ddd;border-radius:4px;padding:2px 4px;">
+                  ${ETH_MONTHS.map((mn, i) =>
+                    `<option value="${i+1}" ${i+1 === current.month ? 'selected' : ''}>${mn}</option>`
+                  ).join('')}
+                </select>
+                <input id="eth-year-inp" type="number" value="${current.year}"
+                  style="width:60px;border:1px solid #ddd;border-radius:4px;padding:2px 4px;margin-left:4px;">
+              </div>
+              <button type="button" id="eth-next" style="background:none;border:none;cursor:pointer;font-size:18px;">&#8250;</button>
+            </div>
+            <div id="eth-days" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;">
+              ${['Su','Mo','Tu','We','Th','Fr','Sa'].map(d =>
+                `<div style="font-weight:bold;font-size:11px;padding:4px 0;color:#888;">${d}</div>`
+              ).join('')}
+              ${buildDays()}
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;">
+              <button type="button" id="eth-today"
+                style="font-size:12px;background:none;border:1px solid #ccc;border-radius:4px;padding:2px 8px;cursor:pointer;">
+                {% trans "Today" %}
+              </button>
+              <button type="button" id="eth-close"
+                style="font-size:12px;background:none;border:1px solid #ccc;border-radius:4px;padding:2px 8px;cursor:pointer;">
+                {% trans "Close" %}
+              </button>
+            </div>
+          `;
+          bindEvents();
+        }
+
+        function buildDays() {
+          const daysInMonth = current.month <= 12 ? 30 : 5;
+          const greg = toGregorian(current.year, current.month, 1);
+          const dow = new Date(greg.year, greg.month - 1, greg.day).getDay();
+          const today = toEthiopian(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());
+          let html = '';
+          for (let i = 0; i < dow; i++) html += '<div></div>';
+          for (let d = 1; d <= daysInMonth; d++) {
+            const isToday = d === today.day && current.month === today.month && current.year === today.year;
+            const selected = d === current.day;
+            html += `<button type="button" data-day="${d}"
+              style="padding:4px;border-radius:4px;border:none;cursor:pointer;
+                background:${selected ? '#2563eb' : isToday ? '#dbeafe' : 'none'};
+                color:${selected ? 'white' : 'inherit'};
+                font-weight:${isToday ? 'bold' : 'normal'};">
+              ${d}
+            </button>`;
+          }
+          return html;
+        }
+
+        function bindEvents() {
+          picker.querySelector('#eth-prev').onclick = () => {
+            current.month--;
+            if (current.month < 1) { current.month = 13; current.year--; }
+            render();
+          };
+          picker.querySelector('#eth-next').onclick = () => {
+            current.month++;
+            if (current.month > 13) { current.month = 1; current.year++; }
+            render();
+          };
+          picker.querySelector('#eth-month-sel').onchange = e => {
+            current.month = parseInt(e.target.value); render();
+          };
+          picker.querySelector('#eth-year-inp').onchange = e => {
+            current.year = parseInt(e.target.value); render();
+          };
+          picker.querySelector('#eth-today').onclick = () => {
+            const t = new Date();
+            current = toEthiopian(t.getFullYear(), t.getMonth() + 1, t.getDate());
+            inputEl.value = formatEth(current.year, current.month, current.day);
+            picker.remove();
+          };
+          picker.querySelector('#eth-close').onclick = () => picker.remove();
+          picker.querySelectorAll('[data-day]').forEach(btn => {
+            btn.onclick = () => {
+              current.day = parseInt(btn.dataset.day);
+              inputEl.value = formatEth(current.year, current.month, current.day);
+              picker.remove();
+            };
+          });
+        }
+
+        render();
+
+        const rect = inputEl.getBoundingClientRect();
+        picker.style.top = `${window.scrollY + rect.bottom + 4}px`;
+        picker.style.left = `${window.scrollX + rect.left}px`;
+        document.body.appendChild(picker);
+
+        setTimeout(() => {
+          document.addEventListener('click', function handler(e) {
+            if (!picker.contains(e.target) && e.target !== inputEl) {
+              picker.remove();
+              document.removeEventListener('click', handler);
+            }
+          });
+        }, 0);
+      }
+
+     document.addEventListener('DOMContentLoaded', () => {
+    const pairs = [
+        { btnId: 'btn_start_date', inputId: 'id_start_date' },
+        { btnId: 'btn_end_date',   inputId: 'id_end_date'   },
+    ];
+
+    pairs.forEach(({ btnId, inputId }) => {
+        const btn = document.getElementById(btnId);
+        const input = document.getElementById(inputId);
+        if (!btn || !input) return;
+
+        // Input is NOT readOnly — user can still type if they want
+        input.placeholder = 'YYYY-MM-DD';
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            buildPicker(input);
+        });
+    });
+});
+
+      // ── Products in Store vs Sold chart ───────────────────────────────────
+      const ctx = document.getElementById("myChart");
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: [
+              {% for location in location_names %}'{{ location }}',{% endfor %}
+            ],
+            datasets: [{
+              label: 'In store',
+              data: [
+                {% for amount in inventory_amounts %}
+                '{{ amount }}',
+                {% endfor %}
+              ],
+              borderWidth: 1
+            },
+              {
+                label: "Sold",
+                data: [
+                  {% for sale in sales %}
+                    '{{ sale }}',
+                  {% endfor %}
+                ]
+              }]
+          },
+          options: {
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+      });
+
+      // ── Income chart ──────────────────────────────────────────────────────
+      const incomeChart = document.getElementById("incomeChart");
+      new Chart(incomeChart, {
+        type: "line",
+        data: {
+          labels: [
+            {% for month in months %}"{{ month }}",{% endfor %}
+          ],
+          datasets: [
+           {% for product, month_income in income_data.items %}
+              {
+                label: "{{ product }}",
+                data: [
+                  {% for month, income in month_income.items %}
+                    '{{ income }}',
+                  {% endfor %}
+                ]
+              },
+           {% endfor %}
+          ],
+        }
+      });
+
+      // ── Monthly performance chart ─────────────────────────────────────────
+      const performanceChart = document.getElementById("monthPerformance");
+      new Chart(performanceChart, {
+        type: "bar",
+        data: {
+          labels: [
+            {% for month in months %}"{{ month }}",{% endfor %}
+          ],
+          datasets: [
+            {
+              label: "In To Do",
+              data: [
+                {% for month, data in month_aggregate_info.items %}
+                  '{{ data.in_todo }}',
+                {% endfor %}
+              ]
+            },
+            {
+              label: "In Progress",
+              data: [
+                {% for month, data in month_aggregate_info.items %}
+                  '{{ data.in_progress }}',
+                {% endfor %}
+              ]
+            },
+            {
+              label: "Done",
+              data: [
+                {% for month, data in month_aggregate_info.items %}
+                  '{{ data.done }}',
+                {% endfor %}
+              ]
+            }
+          ]
+        }
+      });
+    </script>
+{% endblock body_end %}

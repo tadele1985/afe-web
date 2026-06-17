@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}Home{% endblock %}
+{% block javascript %}
+  <script src="{% static 'modal.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+  {% include "partials/breadcrumb.html" with breadcrumbs=breadcrumbs %}
+  <div x-data="{showDetail: false, showEdit: false, showActivity: false}">
+    {% #tabbar tab_names=tab_names %}
+    {% #tab title="Details" tab_num=0 %}
+    <div class="p-4 leading-6">
+      <ul>
+        <li>
+          <span class="text-neutral mr-4">{% trans "Operation" %}:</span>
+          <span class="font-bold">{{ plan.operation_type.name }}</span>
+        </li>
+        {% iterate_operation_plan_locations plan.location as locations %}
+        {% for location in locations %}
+          <li>
+            <span class="text-neutral mr-4">{{ location.type }}:</span>
+            <span class="font-bold">{{ location.name }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% /tab %}
+    {% #tab name="Activities" tab_num=1 %}
+    <div class="flex gap-2  items-center border-b-2 p-2">
+      <h3 class="text-lg">{% trans "Activities" %}</h3>
+      <button @click="showActivity = true" class="btn btn-primary ml-6">{% trans "Add an Activity" %}</button>
+    </div>
+    {% if filter %}
+      <form method="get" class="mt-5 flex gap-2 items-center">
+        {{ filter.form }}
+        <input type="submit" class="btn btn-neutral" value="Filter">
+        <a href="{% url "core:operation_plan_detail" uuid=id %}"
+           class="btn btn-outline">{% trans "Clear" %}</a>
+      </form>
+    {% endif %}
+    <div class="p-4 leading-6">{% render_table table %}</div>
+    {% /tab %}
+    {% /tabbar %}
+    {% #sidebar open="showActivity" override_whole=True %}
+    <form hx-post="{% url "core:operation_plan_detail" uuid=activity_plan_form.initial.operation_plan %}"
+          class="form-control h-full"
+          id="createActivityForm">
+      {% csrf_token %}
+      {{ activity_plan_form }}
+    </form>
+    {% /sidebar %}
+    {% #sidebar open="showDetail" method="post" id="add-detail-activity" %}
+    {% csrf_token %}
+    {% /sidebar %}
+    {% #sidebar open="showEdit" override_whole=True %}
+    <form hx-post="{% url "core:edit_activity_plan" %}"
+          class="form-control h-full" id="edit-detail-activity">
+      {# <div id="edit-detail-activity"></div> #}
+    </form>
+    {% csrf_token %}
+    {% /sidebar %}
+  </div>
+{% endblock %}

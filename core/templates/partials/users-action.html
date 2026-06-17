@@ -1,0 +1,19 @@
+{% load i18n %}
+<div
+     x-data="{createUser: false}">
+        <button hx-get="{% url "core:user_update" pk=id %}"
+                hx-target="#editUser"
+                hx-swap="innerHTML"
+                class="btn btn-link"
+                @click="editUser = true">{% trans "Edit" %}</button>
+        {% if user.is_active %}
+                <form method="post" action="{% url "core:user_disable" pk=id %}">
+                        <input type="submit" class="btn btn-link" value='{% trans "Disable" %}' />
+                </form>
+        {% else %}
+                <form method="post" action="{% url "core:user_enable" pk=id %}">
+                        <input type="submit" class="btn btn-link" value='{% trans "Enable" %}' />
+                </form>
+        {% endif %}
+        </form>
+</div>

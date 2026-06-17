@@ -1,0 +1,11 @@
+<div role="tab"
+    x-cloak
+     x-show.transition.in.opacity.duration.600="activeTab == {{ tab_num }}"
+     class="card section card-compact w-full bg-base-100 shadow-xl">
+    <div class="card-body">
+        <div class="card-title border-b-2 p-2">
+            <h3>{{ title }}</h3>
+        </div>
+        {{ children }}
+    </div>
+</div>

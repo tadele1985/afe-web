@@ -1,0 +1,30 @@
+{% load i18n %}
+{% if form %}
+    {% if form.media %}{{ form.media }}{% endif %}
+{% endif %}
+<div 
+  x-data="{start: '{{ form.start_date.field.widget.attrs.min }}', end: '{{ form.end_date.field.widget.attrs.min }}'}"
+     class="flex flex-col gap-2 h-full w-full"
+  >
+    {% if csrf_token %}<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">{% endif %}
+    <div class="flex-1 flex flex-col gap-2 h-full w-full">
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}<div class="alert alert-error">{{ error }}</div>{% endfor %}
+        {% endif %}
+        <h1 class="font-bold text-lg">Add Activity</h1>
+        {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+        {% for field in form.visible_fields %}
+            {% for error in field.errors %}<div class="alert alert-error">{{ error }}</div>{% endfor %}
+            {% if field.use_fieldset %}
+                <fieldset class="flex gap-2">
+                    {% if field.label %}{{ field.legend_tag }}{% endif %}
+                    {{ field }}
+                </fieldset>
+            {% else %}
+                {{ field.label_tag }}
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <input type="submit" class="btn btn-neutral" value='{% trans "Submit" %}'>
+</div>

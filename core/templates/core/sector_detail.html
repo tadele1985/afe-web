@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+  Sector
+{% endblock title %}
+{% block content %}
+  {% include "partials/breadcrumb.html" with breadcrumbs=breadcrumbs %}
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title">{% trans "Details" %}</h2>
+      <ul>
+        <li class="flex justify-between w-1/2">
+          <p>
+            <span class="font-bold">{% trans "Sector Name" %}:</span> {{ sector.name }}
+          </p>
+        </li>
+        <li>
+          <span class="font-bold">{% trans "Description" %}</span> {{ sector.description }}
+        </li>
+        <li>
+          <span class="font-bold">{% trans "Date Created" %}:</span> {{ sector.createdDate|date:"l F j Y" }}
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endblock content %}

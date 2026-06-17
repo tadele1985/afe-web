@@ -1,0 +1,19 @@
+{% load static %}
+<div role="tablist"
+     x-init="$watch('activeTab', (value) => { const url = new URL(window.location.href); url.searchParams.set('tab', value); history.pushState(null, document.title, url.toString()); })"
+     x-data="{activeTab: new URLSearchParams(location.search).get('tab') ?? 0}"
+     class="drawer-content">
+    <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
+        {% for tab_name in tab_names %}
+            <li class="me-2">
+                <button @click="activeTab = {{ forloop.counter0 }}"
+                        class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50"
+                        aria-current="page"
+                        :class="{'bg-neutral text-neutral-content hover:bg-neutral hover:text-neutral-content': activeTab == {{ forloop.counter0 }}}">
+                    {{ tab_name }}
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+    {{ children }}
+</div>

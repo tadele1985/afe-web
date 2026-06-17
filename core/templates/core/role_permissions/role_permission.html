@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+{% block title %}Role permission &middot; {% endblock %}
+{% block page_title %}Role permission{% endblock %}
+{%  block content %}
+    <div x-data="{addGroup: false, editGroup: false}">
+        <div class="flex justify-between">
+            <h2 class="text-lg font-bold">
+                Role Management
+            </h2>
+            <div>
+                <a class="float-right btn btn-neutral open-modal" @click="addGroup = true" id="add_group">{% trans "Add role" %}</a>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3" id="groups_div">
+            {% for group in groups %}
+                <div class="card bg-base-100 shadow-xl" id="group-{{ group.id }}">
+                    <div class="card-body">
+                        <div class="grid grid-cols-2 gap-2 mb-8">
+                            <div class="">
+                                <h2 class="card-title">{{group.name}}</h2>
+                            </div>
+                            <div class="float-right">
+                                <a class="open-modal" hx-get="{% url 'core:edit_role_permissions' id=group.id %}" hx-target="#editGroup" hx-swap="innerHTML" class="btn btn-link" @click="editGroup = true">Edit</a> |
+                                <a class="delete_group" href="{% url 'core:delete_group' id=group.id %}"">{% trans "Delete" %}</a>
+                            </div>
+                        </div>
+                        <ul class="list-group">
+                            {% for permission in group.permissions.all %}
+                                <li class="list-group-item">
+                                    {{ permission.name }}
+                                    <a class="float-right remove_permission_from_group" href="#" data-permission="{{ permission.id }}" data-group="{{ group.id }}"><i class="fas fa-window-minimize text-danger"></i></a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% #sidebar open="editGroup" override_whole=True override_whole_id="editGroup" %}
+        {% /sidebar %}
+        {% #sidebar open="addGroup" override_whole=True override_whole_id="addGroup" %}
+            {% include 'core/role_permissions/add_group_modal.html' %} 
+        {% /sidebar %}
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% load i18n %}
+<div>
+  <button hx-get="{% url 'core:get_detailed_activity_form' %}?uuid={{ id }}"
+          hx-target="#add-detail-activity"
+          hx-trigger="click"
+          hx-swap="outerHTML"
+          @click="showDetail = true"
+          class="font-medium text-blue-600 hover:underline cursor-pointer">{% trans "Add Detail Activity" %}</button>
+  |
+  <button @click="showEdit = true"
+          hx-get="{% url 'core:get_edit_activity_form' %}?uuid={{ id }}"
+          hx-target="#edit-detail-activity"
+          hx-swap="innerHTML"
+          class="font-medium text-blue-600 hover:underline cursor-pointer">{% trans "Edit" %}</button>
+  |
+  <a
+     class="font-medium text-blue-600 hover:underline cursor-pointer"
+     href="/activity_plan/{{ id }}/">{% trans "View Detail" %}</a>
+</div>

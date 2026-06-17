@@ -1,0 +1,38 @@
+{% load custom_filters %}
+{% for location in locations %}
+  <script></script>
+  <div>
+    <div class="grid grid-cols-2 gap-2"
+         id="{{ location|lower|underscore }}_details"></div>
+  </div>
+  <div>
+    <label class="label" for="{{ location|lower|underscore }}_id">
+      <span class="text-base label-text">{{ location }}</span>
+    </label>
+    <select {% if location == end_location %}name="location" required{% else %}name="{{ location|lower }}"{% endif %}
+            id="{{ location|lower|underscore }}_id"
+            class="select select-bordered w-full"
+            multiple
+            {% if locations|next:forloop.counter0 %} hx-trigger="change" hx-swap="innerHTML" hx-target="#{{ locations|next:forloop.counter0|lower|underscore }}_id" hx-get="{% url 'core:get_multi_select_locations' %}?type={{ location }}&end_location={{ end_location }}" {% endif %}>
+      {% if location == "HQ" %}
+        <option>{% trans "Select location" %}</option>
+        {% for option in options %}
+          <option value="{{ option.id }}"
+                  {% if selected_location_list %}{% if selected_location_list|get_item:"HQ"|get_item:"selected" == option.id %}selected{% endif %}
+                  {% endif %}>{{ option.name }}</option>
+        {% endfor %}
+      {% else %}
+        {% if selected_location_list %}
+          {% for option in selected_location_list|get_item:location|get_item:"options" %}
+            <option value="{{ option.id }}"
+                    {% if selected_location_list|get_item:location|get_item:"selected" == option.id %}selected{% endif %}>
+              {{ option.name }}
+            </option>
+          {% endfor %}
+        {% else %}
+          <option>{% trans "Select location" %}</option>
+        {% endif %}
+      {% endif %}
+    </select>
+  </div>
+{% endfor %}

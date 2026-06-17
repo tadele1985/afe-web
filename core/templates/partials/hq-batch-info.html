@@ -1,0 +1,24 @@
+{% load render_table from django_tables2 %}
+{% load i18n %}
+<div id="info-content" x-data="{showEdit: false}">
+  <h2 class="text-lg font-bold">{% trans "List of Batches" %}</h2>
+  {% if filter %}
+    <form
+          hx-get="{% url "core:hq_batch_info" %}"
+          hx-target="#info-content"
+          hx-trigger="submit"
+          method="get"
+          action="{% url "core:hq_batch_info" %}"
+          class="mt-5 flex gap-4 items-center">
+      {{ filter.form }}
+      <input type="hidden" name="location" value="{{ location }}">
+      <input type="submit" class="btn btn-neutral" value="Filter">
+      <button type="button"
+              hx-target="#info-content"
+              hx-get="{% url "core:hq_batch_info" %}?location={{ location }}"
+              href="{% url "core:hq_batch_info" %}?location={{ location }}"
+              class="btn btn-outline">{% trans "Clear" %}</button>
+    </form>
+  {% endif %}
+  <div>{% render_table table %}</div>
+</div>

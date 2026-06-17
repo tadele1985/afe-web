@@ -1,0 +1,96 @@
+{% load i18n %}
+<form class="resource_form flex flex-col px-4 h-full"
+      hx-post="{% url 'core:edit_detail_activity' %}"
+      hx-target="#edit-detail-activity-form"
+      hx-swap="outerHTML"
+      id="edit-detail-activity-form">
+    {% csrf_token %}
+    <div class="flex flex-col gap-2">
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}<div class="alert alert-error">{{ error }}</div>{% endfor %}
+        {% endif %}
+        <h1 class="font-bold text-lg">{% trans "Edit Detail Activity" %}</h1>
+        {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+        {% for field in form.visible_fields %}
+            {% for error in field.errors %}<div class="alert alert-error">{{ error }}</div>{% endfor %}
+            {% if field.use_fieldset %}
+                <fieldset class="flex gap-2">
+                    {% if field.label %}{{ field.legend_tag }}{% endif %}
+                    {{ field }}
+                </fieldset>
+            {% else %}
+                {{ field.label_tag }}
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+        <div id="edit-resource-forms">
+            {% if detail_type.resource %}
+                <label class="label p-0 mt-4">
+                    <span class="text-base label-text">{% trans "Resources" %}</span>
+                </label>
+                <table class="table">
+                    <thead>
+                        <th>{% trans "Resources" %}</th>
+                        <th>{% trans "Work norm" %}</th>
+                        <th>{% trans "Planned achievement" %}</th>
+                        <th>{% trans "Payment" %}</th>
+                        <th>{% trans "Cost in birr" %}</th>
+                    </thead>
+                    <tbody id="resource-set">
+                        {% for resource in resources %}{{ resource }}{% endfor %}
+                    </tbody>
+                </table>
+                <button hx-get="{% url 'core:get_resource_form' %}?activity_plan={{ activity_plan }}"
+                        hx-swap="beforeend"
+                        hx-target="#resource-set"
+                        class="mt-4 btn-sm underline">{% trans "Add a resource" %}</button>
+            {% endif %}
+            {% if detail_type.input %}
+                <label class="label">
+                    <span class="text-base label-text">{% trans "Inputs" %}</span>
+                </label>
+                <table class="table">
+                    <thead>
+                        <th>{% trans "Resources" %}</th>
+                        <th>{% trans "Work norm" %}</th>
+                        <th>{% trans "Planned achievement" %}</th>
+                        <th>{% trans "Payment" %}</th>
+                        <th>{% trans "Cost in birr" %}</th>
+                    </thead>
+                    <tbody id="input-set">
+                        {% for input in inputs %}{{ input }}{% endfor %}
+                    </tbody>
+                </table>
+                <button hx-get="{% url 'core:get_input_form' %}?activity_plan={{ activity_plan }}"
+                        hx-swap="beforeend"
+                        hx-target="#input-set"
+                        class="mt-4 btn-sm underline">{% trans "Add input" %}</button>
+            {% endif %}
+            {% if detail_type.tool %}
+                <label class="label p-0 mt-4">
+                    <span class="text-base label-text">{% trans "Tools" %}</span>
+                </label>
+                <table class="table">
+                    <thead>
+                        <th>{% trans "Resources" %}</th>
+                        <th>{% trans "Work norm" %}</th>
+                        <th>{% trans "Planned achievement" %}</th>
+                        <th>{% trans "Payment" %}</th>
+                        <th>{% trans "Cost in birr" %}</th>
+                    </thead>
+                    <tbody id="tool-set">
+                        {% for tool in tools %}{{ tool }}{% endfor %}
+                    </tbody>
+                </table>
+                <button hx-get="{% url 'core:get_tool_form' %}?activity_plan={{ activity_plan }}"
+                        hx-swap="beforeend"
+                        hx-target="#tool-set"
+                        class="mt-4 btn-sm underline">{% trans "Add a tool" %}</button>
+            {% endif %}
+        </div>
+    </div>
+    <input type="submit"
+           class="btn btn-neutral w-64 mt-10 self-center"
+           style="margin-bottom: 5px"
+           value="Submit">
+</form>

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% block title %}Location Detail{% endblock %}
+{% block content %}
+  {% include "partials/breadcrumb.html" with breadcrumbs=breadcrumbs %}
+  <div x-data="{show: false}">
+    {% #tabbar tab_names=tab_names %}
+    {% #tab title="Location Detail" tab_num=0 %}
+    <div class="p-4 leading-6">
+      <ul>
+        {% for property, value in location.detail_info.items %}
+          <li>
+            <span class="text-neutral mr-4">{{ property }}:</span> <span class="font-bold">{{ value }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% /tab %}
+    {% #baretab tab_num=1 %}
+    <div class="card-body">
+      {% if filter %}
+        <form x-ref="filterForm"
+              method="get"
+              action="{% url 'core:location_detail' pk=id %}"
+              class="mt-5 flex gap-2 items-center">
+          <input type="hidden" name="tab" value="1">
+          {{ filter.form }}
+          <input type="submit" class="btn btn-neutral" value="{% trans "Filter" %}">
+          <a href="{% url "core:location_detail" pk=id %}?tab=1"
+             class="btn btn-outline">{% trans "Clear" %}</a>
+        </form>
+      {% endif %}
+      <div class="p-4 leading-6">{% render_table table %}</div>
+    </div>
+    {% /baretab %}
+    {% /tabbar %}
+    {% #baresidebar children_id="batch-details" open="show" %}
+    {% /baresidebar %}
+  </div>
+{% endblock %}

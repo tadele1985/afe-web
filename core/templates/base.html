@@ -1,0 +1,174 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en" data-theme="customLightForest">
+    <head>
+        <base href="">
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}{% endblock %}
+        - AFE</title>
+        <meta name="description" content="Source Platform" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link href="{% static 'css/afe-ui.css' %}" rel="stylesheet">
+        <script src="{% static 'js/htmx-min.js' %}" defer></script>
+        <script defer
+                src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+        <script defer
+                src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <link rel="shortcut icon"
+              type="image/png"
+              href="{% static 'core/images/favicon.ico' %}" />
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+        {% block statics %}
+        {% endblock statics %}
+        <style>
+            .fade-in-fade-out {
+                -webkit-animation: seconds 1.0s forwards;
+                -webkit-animation-iteration-count: 1;
+                -webkit-animation-delay: 1s;
+                animation: seconds 1.0s forwards;
+                animation-iteration-count: 1;
+                animation-delay: 2s;
+                position: relative;
+                position: absolute;
+                top: 0;
+            }
+            
+            @-webkit-keyframes seconds {
+              0% {
+                opacity: 1;
+                visibility: visible;
+              }
+              100% {
+                opacity: 0;
+                visibility: hidden;
+              }
+            }
+            @keyframes seconds {
+              0% {
+                opacity: 1;
+                visibility: visible;
+              }
+              100% {
+                opacity: 0;
+                visibility: hidden;
+              }
+            }
+            [x-cloak] {
+              display: none !important;
+            }
+            .active {
+              background-color: rgb(243, 244, 246);
+            }
+        </style>
+        <script type="text/javascript">
+      function append_report_export_query_param(a, b) {
+        var searchParams = new URLSearchParams(window.location.search);
+        if (b != '')
+            searchParams.set(a, b);
+        else
+            searchParams.delete(a);
+        window.location.search = searchParams.toString();
+      }
+        </script>
+        {% if form %}
+            {% if form.media %}{{ form.media }}{% endif %}
+        {% endif %}
+        <script src="{% static "js/jquery.min.js" %}"></script>
+        <script src="{% static 'js/calendar/jquery.plugin.js' %}"></script>
+        <script src="{% static 'js/calendar/jquery.calendars.js' %}"></script>
+        <script src="{% static 'js/calendar/jquery.calendars.plus.js' %}"></script>
+        <script src="{% static 'js/calendar/jquery.calendars.picker.js' %}"></script>
+        <script src="{% static 'js/calendar/jquery.calendars.ethiopian.js' %}"></script>
+        <script src="{% static 'js/calendar/jquery.calendars.ethiopian-am.js' %}"></script>
+        <script src="{% static 'popupDatepicker.js' %}"></script>
+        {% block javascript %}{% endblock %}
+    </head>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <div class="navbar bg-base-300 text-white shadow-2xl">
+            <div class="flex-1">
+                <a class="btn btn-ghost text-xl">Amhara Forest Enterprise FEMIS</a>
+            </div>
+            <div class="flex-none">
+                <ul class="menu menu-horizontal px-1">
+                    <li>
+
+                        <a href="{% url 'change_password' %}">
+                            <button type="submit">{{ user.get_full_name }}</button>
+                        </a>
+                    </li>
+                    <li>
+                        <form method="post"
+                              action="{% url 'set_language' %}"
+                              x-data
+                              x-on:change="$el.submit();">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ redirect_to }}" />
+                            <select name="language" class="bg-base-200 ">
+                                {% get_current_language as LANGUAGE_CODE %}
+                                <option value="en">English</option>
+                                <option value="am" {% if LANGUAGE_CODE == 'am' %}selected{% endif %}>Amharic</option>
+                            </select>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="drawer lg:drawer-open">
+            <input id="main-sidebar" type="checkbox" class="drawer-toggle" />
+            <div class="drawer-content p-4">
+                <label for="main-sidebar" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
+                {% block content %}{% endblock %}
+                {% if messages %}
+                    <div class="toast toast-top toast-end fade-in-fade-out">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} mb-4">
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="drawer-side">
+                <label for="main-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
+                <ul class="menu p-4 w-80 min-h-full bg-base-200 text-white">
+                    <!-- Sidebar content here -->
+                    {% for link in sidebar_content %}
+                        <li>
+                            {% if link.sub_menu %}
+                                <details open>
+                                    <summary>{% trans link.name %}</summary>
+                                    <ul class="menu menu-nav">
+                                        {% for sub_link in link.sub_menu %}
+                                            <li>
+                                                <a href="{% url sub_link.url %}{% if sub_link.query_params %}{{ sub_link.query_params }}{% endif %}"
+                                                   {% if page == sub_link.name %}class="bg-base-300"{% endif %}>{% trans sub_link.name %}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </details>
+                            {% else %}
+                                <a href="{% url link.url %}"
+                                   {% if page == link.name %}class="active"{% endif %}>{% trans link.name %}</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% block body_end %}
+        {% endblock body_end %}
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>lucide.createIcons();</script>
+    </body>
+</html>

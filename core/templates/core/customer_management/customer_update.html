@@ -1,0 +1,14 @@
+{% load i18n %}
+<form class="flex flex-col px-4 h-full"
+    hx-post="{% url "core:customer_update" uuid=form.instance.id %}"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    <div class="flex-1 flex flex-col gap-2 h-full">
+        <h1 class="font-bold text-lg">{% trans "Edit Customer" %}</h1>
+        {{ form }}
+    
+        <div class="flex justify-between gap-4 py-4">
+            <input type="submit" class="btn btn-neutral flex-1" value="Submit">
+        </div>
+    </div>
+</form>

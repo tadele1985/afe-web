@@ -1,0 +1,12 @@
+{% load i18n %}
+<div>
+  <button hx-get="{% url "core:edit_sector" pk=id %}"
+          hx-target="#editSector"
+          hx-swap="innerHTML"
+          @click="showEdit = true"
+          class="btn btn-link">{% trans "Edit" %}</button>
+  <a href="{% url "core:sector" pk=id %}" class="btn btn-link">{% trans "View Detail" %}</a>
+  <!-- <button hx-post="{% url "core:delete_sector" pk=id %}" -->
+  <!--         hx-target="body" -->
+  <!--         class="btn btn-link">Delete</button> -->
+</div>

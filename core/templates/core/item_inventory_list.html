@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}Item Inventory{% endblock %}
+{% block content %}
+    <div id="info-content">
+        <h1 class="font-bold text-lg">{% trans "Item Inventory" %}</h1>
+        <style>
+        .choices {
+            width: 300px;
+        }
+        </style>
+        {% if filter %}
+            <form hx-boost
+                  hx-get="{% url "core:item_inventory" %}"
+                  hx-target="#info-content"
+                  hx-trigger="submit"
+                  method="get"
+                  action="{% url "core:item_inventory" %}"
+                  class="mt-5 flex gap-2 mb-5">
+                {{ filter.form }}
+                <script>
+                  const elements = document.querySelectorAll('#info-content select');
+                  for (const element of elements) {
+                      new Choices(element);
+                  }
+                </script>
+                <input type="submit" class="btn btn-neutral" value="Filter">
+                <a href="{% url "core:item_inventory" %}" class="btn btn-outline">Clear</a>
+            </form>
+        {% endif %}
+        <div>{% render_table table %}</div>
+    </div>
+{% endblock %}

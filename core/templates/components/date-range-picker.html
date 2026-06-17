@@ -1,0 +1,18 @@
+{% load i18n %}
+<div date-rangepicker class="flex items-center">
+    <div>
+        <input name="{{ start_name|default:"start_date" }}"
+            type="date"
+            class="bg-inherit border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+            placeholder="Select date start"
+            required>
+        </div>
+        <span class="mx-4 text-gray-500">{% trans "to" %}</span>
+        <div>
+            <input name="{{ end_name|default:"end_date" }}"
+                type="date"
+                class="bg-inherit border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                placeholder="Select date end" 
+                required/>
+        </div>
+    </div>

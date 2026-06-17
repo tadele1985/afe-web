@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load render_table from django_tables2 %}
+{% block title %}Location{% endblock %}
+{% block content %}
+  <div id="location-list" x-data="{show: false, showEdit: false}">
+    <div class="flex justify-between">
+      <h2 class="text-lg font-bold">{% trans "Location" %}</h2>
+      <div>
+        <button class="btn btn-primary btn-md mr-2" @click="show = true">{% trans "Add a Location" %}</button>
+      </div>
+    </div>
+    {% if filter %}
+      <form method="get"
+            class="flex gap-2 items-center"
+            hx-get
+            hx-target="#location-list">
+        {{ filter.form }}
+        <input type="submit" class="btn btn-neutral" value="Filter">
+        <a href="{% url "core:location" %}"
+           hx-get=" {% url "core:location" %} "
+           hx-target="#location-list"
+           class="btn btn-outline">{% trans "Clear" %}</a>
+      </form>
+    {% endif %}
+    {% render_table table %}
+    {% #sidebar open="show" override_whole=True %}
+    <form hx-post="{% url "core:create_location" %}"
+          hx-target="#create_location"
+          hx-swap="innerHTML"
+          class="gap-4 h-full w-full flex flex-col">
+      <div id="create_location" class="flex-1 flex flex-col">{{ form }}</div>
+      <div class="flex justify-between gap-4">
+        <button class="btn btn-neutral flex-1"
+                x-on:click.prevent="if(confirm(`Are you sure you want to exit without saving?`)) { show = false }">
+          Close
+        </button>
+        <button class="btn btn-neutral flex-1" type="submit">Submit</button>
+      </div>
+    </form>
+    {% /sidebar %}
+    {% #sidebar open="showEdit" override_whole=True override_whole_id="editLocation" %}
+    {% /sidebar %}
+  </div>
+{% endblock content %}

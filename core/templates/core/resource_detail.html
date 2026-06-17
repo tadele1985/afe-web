@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}
+  Resource
+{% endblock title %}
+{% block content %}
+  {% include "partials/breadcrumb.html" with breadcrumbs=breadcrumbs %}
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title">{% trans "Details" %}</h2>
+      <ul>
+        <li class="flex justify-between w-1/2">
+          <p>
+            <span class="font-bold">{% trans "Name" %}</span> {{ resource.name }}
+          </p>
+        </li>
+        <li class="flex justify-between w-1/2">
+          <p>
+            <span class="font-bold">{% trans "Norm Unit" %}</span> {{ resource.norm_unit }}
+          </p>
+        </li>
+        <li>
+          <span class="font-bold">{% trans "Achievement Unit" %}</span> {{ resource.achievment_unit }}
+        </li>
+        <li>
+          <span class="font-bold">{% trans "Payment Unit" %}</span> {{ resource.payment_unit }}
+        </li>
+        <li>
+          <span class="font-bold">{% trans "Utility Rate" %}</span> {{ resource.utility_rate }}
+        </li>
+        <li>
+          <span class="font-bold">{% trans "Completion Rate" %}</span> {{ resource.completion_rate }}
+        </li>
+        <li>
+          <span class="font-bold">{% trans "Formula Type" %}</span> {{ resource.formula_type }}
+        </li>
+        {% if resource.sector.count >= 1 %}
+          <li>
+            <p class="font-bold text-lg text-center mt-5">{% trans "Sectors" %}</p>
+            <ul>
+              {% for sector in resource.sectors.all %}
+                <li class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50">{{ sector.name }}</li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endif %}
+        {% if resource.operation_types.count >= 1 %}
+          <li>
+            <p class="font-bold text-lg text-center mt-5">{% trans "Operations" %}</p>
+            <ul>
+              {% for operation in resource.operation_types.all %}
+                <li class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50">
+                  {{ operation.name }}
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+{% endblock content %}

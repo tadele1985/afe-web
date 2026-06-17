@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+{% block title %}
+    Purchased Items
+{% endblock title %}
+{% block content %}
+    <div x-data="{showEdit: false}">
+        <h2 class="text-lg font-bold">{% trans "Purchase Report" %}</h2>
+        {% if filter %}
+            <form method="get" class="mt-5 flex gap-4 items-center">
+                {{ filter.form }}
+                <input type="submit" class="btn btn-neutral" value="Filter">
+                <a href="{% url "core:reports_purchase" %}" class="btn btn-outline">{% trans "Clear" %}</a>
+                <a onclick="append_report_export_query_param('_export', 'xlsx');" class="btn btn-neutral ml-8">{% trans "Download" %}</a>
+            </form>
+        {% endif %}
+        <div>{% render_table table %}</div>
+    </div>
+{% endblock %}

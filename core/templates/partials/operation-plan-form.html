@@ -1,0 +1,17 @@
+<div>
+  {% csrf_token %}
+  <div class="flex flex-col gap-2">
+    {% for field in form.visible_fields %}
+      {{ field.errors }}
+      {% if field.use_fieldset %}
+        <fieldset class="flex flex-col gap-2">
+          <legend class="text-lg font-bold">{{ field.label }}</legend>
+          {{ field }}
+        </fieldset>
+      {% else %}
+        {{ field.label_tag }}
+        {{ field }}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

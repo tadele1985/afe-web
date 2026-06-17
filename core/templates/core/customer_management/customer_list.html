@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}Customer Managment{% endblock %}
+{% block content %}
+    <div x-data="{show: false, editCustomer: false, createCustomer: false}">
+        <div class="flex justify-between">
+            <h2 class="text-lg font-bold">{% trans "Customer Management" %}</h2>
+            <div>
+                <button class="btn btn-primary btn-md mr-2" @click="createCustomer = true">{% trans "Create a Customer" %}</button>
+            </div>
+        </div>
+        {% if filter %}
+            <form method="get" class="mt-5 flex gap-4 items-center">
+                {{ filter.form }}
+                <input type="submit" class="btn btn-neutral" value="Filter">
+                <a href="{% url "core:customers" %}" class="btn btn-outline">{% trans "Clear" %}</a>
+            </form>
+        {% endif %}
+        <div>{% render_table table %}</div>
+        {% #sidebar open="editCustomer" override_whole=True override_whole_id="editCustomer" %}
+        {% /sidebar %}
+        {% #sidebar open="createCustomer" override_whole=True override_whole_id="createCustomer" %}
+        {% include 'core/customer_management/customer_create.html' %}
+        {% /sidebar %}
+    </div>
+{% endblock %}

@@ -1,0 +1,39 @@
+<style>
+  .sidebar-{{ open }} {
+    min-width: 33%;
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 40;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5);
+  }
+</style>
+<div x-cloak x-show="{{ open }}" class="overlay"></div>
+<div class="fixed m-0 top-0 right-0 h-full bg-base-200 text-base-content p-8 flex flex-col gap-4 z-50 sidebar-{{ open }} overflow-y-scroll"
+     @keyup.escape.window="{{ open }} = false"
+     x-transition:enter="transition ease-out duration-300 transform"
+     x-transition:enter-start="translate-x-full"
+     x-transition:enter-end="translate-x-0"
+     x-transition:leave="transition ease-in duration-300 transform"
+     x-transition:leave-start="translate-x-0"
+     x-transition:leave-end="translate-x-full"
+     x-show="{{ open }}"
+     x-cloak
+     @click.outside="if(confirm(`Are you sure you want to exit without saving?`)) { {{ open }} = false }">
+    <div {% attrs id %} class="gap-4 h-full w-full flex flex-col">
+        <div {% if children_id %}id="{{ children_id }}"{% endif %}
+             class="flex-1 flex flex-col">{{ children }}</div>
+        {% if not no_submit %}
+            <div class="flex justify-between gap-4">
+                <button class="btn btn-neutral flex-1"
+                        x-on:click.prevent="if(confirm(`Are you sure you want to exit without saving?`)) { {{ open }} = false }">
+                    Close
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>

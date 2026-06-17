@@ -1,0 +1,11 @@
+{% load i18n %}
+<form class="flex flex-col px-4 h-full"
+      hx-post="{% url "core:create_actual_activity_resource" %}"
+      hx-swap="outerHTML">
+  {% csrf_token %}
+  <div class="flex-1 flex flex-col gap-2 h-full">
+    <h1 class="font-bold text-lg">{% trans "Add Actual Activity Resource" %}</h1>
+    {{ form }}
+  </div>
+  <input type="submit" class="btn btn-neutral" value="{% trans "Submit" %}">
+</form>

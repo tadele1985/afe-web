@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}User Managment{% endblock %}
+{% block content %}
+    <div x-data="{show: false, editUser: false, createUser: false}">
+        <div class="flex justify-between">
+            <h2 class="text-lg font-bold">{% trans "User Management" %}</h2>
+            <div>
+                <button class="btn btn-primary btn-md mr-2" @click="createUser = true">{% trans "Create a User" %}</button>
+            </div>
+        </div>
+        {% if filter %}
+            <form method="get" class="mt-5 flex gap-4 items-center" autocomplete="off">
+                {{ filter.form }}
+                <input type="submit" class="btn btn-neutral" value="Filter">
+                <a href="{% url "core:users" %}" class="btn btn-outline">{% trans "Clear" %}</a>
+            </form>
+        {% endif %}
+        <div>{% render_table table %}</div>
+        {% #sidebar open="editUser" override_whole=True override_whole_id="editUser" %}
+        {% /sidebar %}
+        {% #sidebar open="createUser" override_whole=True override_whole_id="createUser" %}
+        {% include 'core/user_management/user_create.html' %}
+        {% /sidebar %}
+    </div>
+{% endblock %}

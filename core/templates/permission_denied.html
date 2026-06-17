@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+    <head>
+        <base href="">
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}{% endblock %}
+        - AFE</title>
+        <meta name="description" content="Source Platform" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link href="{% static 'css/afe-ui.css' %}" rel="stylesheet">
+        <script src="{% static 'js/htmx-min.js' %}" defer></script>
+        <script defer
+                src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+        <script defer
+                src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <link rel="shortcut icon"
+              type="image/png"
+              href="{% static 'core/images/favicon.ico' %}" />
+        <style>
+            .fade-in-fade-out {
+                -webkit-animation: seconds 1.0s forwards;
+                -webkit-animation-iteration-count: 1;
+                -webkit-animation-delay: 1s;
+                animation: seconds 1.0s forwards;
+                animation-iteration-count: 1;
+                animation-delay: 2s;
+                position: relative;
+                position: absolute;
+                top: 0;
+            }
+            
+            @-webkit-keyframes seconds {
+              0% {
+                opacity: 1;
+                visibility: visible;
+              }
+              100% {
+                opacity: 0;
+                visibility: hidden;
+              }
+            }
+            @keyframes seconds {
+              0% {
+                opacity: 1;
+                visibility: visible;
+              }
+              100% {
+                opacity: 0;
+                visibility: hidden;
+              }
+            }
+            [x-cloak] {
+              display: none !important;
+            }
+        </style>
+        {% block javascript %}{% endblock %}
+    </head>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <div class="navbar bg-base-300">
+            <div class="flex-1">
+                <a class="btn btn-ghost text-xl">AFE</a>
+            </div>
+            <div class="flex-none">
+                <ul class="menu menu-horizontal px-1">
+                    <li>
+                        <label>{{ user.get_full_name }}</label>
+                    </li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="drawer lg:drawer-open">
+            <input id="main-sidebar" type="checkbox" class="drawer-toggle" />
+            <div class="drawer-content p-4">
+                <label for="main-sidebar" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-10 rounded relative" role="alert">
+                    <h2 class="font-bold text-2xl mb-4">Permission Denied!</h2>
+                    <span class="block sm:inline">You dont have necessary role to access this page. Please contact system admistrator.</span>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                      <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                    </span>
+                </div>
+                {% if messages %}
+                    <div class="toast toast-top toast-end fade-in-fade-out">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} text-white mb-4">
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="drawer-side">
+                <label for="main-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
+                <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+                    <!-- Sidebar content here -->
+                    {% for link in sidebar_content %}
+                        <li>
+                            {% if link.sub_menu %}
+                                <details open>
+                                    <summary>{{ link.name }}</summary>
+                                    <ul class="menu menu-nav">
+                                        {% for sub_link in link.sub_menu %}
+                                            <li>
+                                                <a href="{% url sub_link.url %}{% if sub_link.query_params %}{{ sub_link.query_params }}{% endif %}"
+                                                   {% if page == sub_link.name %}class="active"{% endif %}>
+                                                {{ sub_link.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </details>
+                            {% else %}
+                                <a href="{% url link.url %}"
+                                   {% if page == link.name %}class="active"{% endif %}>{{ link.name }}</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>

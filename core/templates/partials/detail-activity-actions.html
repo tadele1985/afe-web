@@ -1,0 +1,12 @@
+{% load i18n %}
+<div>
+    <button class="font-medium text-blue-600 hover:underline cursor-pointer"
+            @click="showEdit = true"
+            hx-get="{% url 'core:get_edit_detailed_activity_form' id=id %}"
+            hx-swap="innerHTML"
+            hx-target="#edit-detail">{% trans "Edit" %}</button>
+    |
+    <a
+       class="font-medium text-blue-600 hover:underline cursor-pointer"
+       href="{% url 'core:detail_activity_detail' uuid=id %}">{% trans "View detail" %}</a>
+</div>

@@ -1,0 +1,1189 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-25 10:37+0300\n"
+"PO-Revision-Date: 2024-07-15 14:07+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: core/templates/base-table.html:76
+msgid "previous"
+msgstr "በፊት"
+
+#: core/templates/base-table.html:96
+msgid "next"
+msgstr "ቀጣይ"
+
+#: core/templates/components/date-range-picker.html:10
+msgid "to"
+msgstr "ወደ"
+
+#: core/templates/core/activity_plan_detail.html:22
+msgid "Activity"
+msgstr "ተግባራት"
+
+#: core/templates/core/activity_plan_detail.html:26
+msgid "Date range"
+msgstr "የጊዜ ገደብ"
+
+#: core/templates/core/activity_plan_detail.html:30
+msgid "Asignee"
+msgstr "መመደብ"
+
+#: core/templates/core/activity_plan_detail.html:48
+#: core/templates/core/detail_activity_form.html:16
+#: core/templates/partials/activity-plan-actions.html:8
+msgid "Add Detail Activity"
+msgstr "ዝርዝር ተግባራት መጨመር"
+
+#: core/templates/core/activity_plan_detail.html:55
+#: core/templates/core/customer_management/customer_list.html:19
+#: core/templates/core/dashboard.html:18
+#: core/templates/core/item_purchase_detail.html:16
+#: core/templates/core/item_purchase_list.html:14
+#: core/templates/core/item_receive_detail.html:16
+#: core/templates/core/item_receive_list.html:14
+#: core/templates/core/item_sale_detail.html:16
+#: core/templates/core/item_sale_list.html:14
+#: core/templates/core/item_transport_detail.html:15
+#: core/templates/core/item_transport_list.html:14
+#: core/templates/core/location_detail.html:30
+#: core/templates/core/location_list.html:24
+#: core/templates/core/operation_plan.html:22
+#: core/templates/core/operation_plan_detail.html:41
+#: core/templates/core/performance_report.html:61
+#: core/templates/core/seed_test_list.html:13
+#: core/templates/core/user_management/user_list.html:19
+#: core/templates/partials/hq-batch-info.html:20
+msgid "Clear"
+msgstr "አጽዳ"
+
+#: core/templates/core/activity_plan_form.html:29
+#: core/templates/core/customer_management/customer_create.html:11
+#: core/templates/core/role_permissions/edit_role_permissions.html:17
+#: core/templates/core/user_management/user_update.html:11
+#: core/templates/partials/actual-activity-update.html:11
+#: core/templates/partials/actual_activity_form.html:10
+#: core/templates/partials/configuration-update.html:13
+#: core/templates/partials/location-update.html:13
+#: core/templates/partials/operation-plan-duplicate.html:14
+#: core/templates/partials/operation-plan-update.html:15
+msgid "Submit"
+msgstr "አስገባ"
+
+#: core/templates/core/activity_resource.html:22
+#: core/templates/core/edit_detail_activity_form.html:34
+#: core/templates/core/edit_detail_activity_form.html:55
+#: core/templates/core/edit_detail_activity_form.html:76
+#: core/templates/partials/resource-form.html:9
+#: core/templates/partials/resource-form.html:29
+#: core/templates/partials/resource-form.html:51
+msgid "Work norm"
+msgstr "መደበኛ ስራ"
+
+#: core/templates/core/activity_resource.html:27
+#: core/templates/core/detail_activity_detail.html:77
+#: core/templates/core/edit_detail_activity_form.html:35
+#: core/templates/core/edit_detail_activity_form.html:56
+#: core/templates/core/edit_detail_activity_form.html:77
+#: core/templates/partials/resource-form.html:10
+#: core/templates/partials/resource-form.html:52
+msgid "Planned achievement"
+msgstr "የታቀደ ግብ"
+
+#: core/templates/core/activity_resource.html:32
+#: core/templates/core/detail_activity_detail.html:78
+#: core/templates/core/edit_detail_activity_form.html:36
+#: core/templates/core/edit_detail_activity_form.html:57
+#: core/templates/core/edit_detail_activity_form.html:78
+#: core/templates/partials/resource-form.html:11
+#: core/templates/partials/resource-form.html:53
+msgid "Payment"
+msgstr "ክፍያ"
+
+#: core/templates/core/activity_resource.html:36
+#: core/templates/core/activity_resource.html:68
+#: core/templates/core/edit_detail_activity_form.html:37
+#: core/templates/core/edit_detail_activity_form.html:58
+#: core/templates/core/edit_detail_activity_form.html:79
+#: core/templates/partials/resource-form.html:12
+#: core/templates/partials/resource-form.html:34
+#: core/templates/partials/resource-form.html:54
+msgid "Cost in birr"
+msgstr "ዋጋ በብር"
+
+#: core/templates/core/activity_resource.html:42
+msgid "Planned"
+msgstr "የታቀዱ"
+
+#: core/templates/core/activity_resource.html:56
+msgid "Date of actual achievements"
+msgstr "ተግባሩ የተፈጸመበት ቀን"
+
+#: core/templates/core/activity_resource.html:57
+msgid "No of person"
+msgstr "የሰው ብዛት"
+
+#: core/templates/core/activity_resource.html:59
+msgid "Actual achievement"
+msgstr "የተፈጸሙ ተግባራት"
+
+#: core/templates/core/activity_resource.html:64
+msgid "Actual payment"
+msgstr "የተፈጸመ ክፍያ"
+#: core/templates/core/activity_resource.html:83
+msgid "Update"
+msgstr "አሻሽል"
+
+#: core/templates/core/activity_resource.html:93
+#: core/templates/core/detail_activity_detail.html:36
+msgid "Total Completion percentage"
+msgstr "አጠቃላይ የአፈጻጸም በመቶኛ"
+
+#: core/templates/core/activity_resource.html:98
+#: core/templates/core/detail_activity_detail.html:43
+msgid "Total Utilization Percentage"
+msgstr "አጠቃላይ አጠቃቀም በመቶኛ"
+
+#: core/templates/core/activity_resource.html:103
+#: core/templates/core/detail_activity_detail.html:50
+msgid "Total Cost Utilization Percentage"
+msgstr "አጠቃላይ የወጪ አጠቃቀም በመቶኛ"
+
+#: core/templates/core/annual_plan_list.html:17
+msgid "Task"
+msgstr "ስራ"
+
+#: core/templates/core/annual_plan_list.html:18
+#: core/templates/core/detail_activity_detail.html:71
+#, fuzzy
+#| msgid "Norm Unit"
+msgid "Unit"
+msgstr "የስራ ተመን"
+
+#: core/templates/core/annual_plan_list.html:19
+msgid "Annual Plan"
+msgstr "አመታዊ እቅድ አፈጻጸም"
+
+#: core/templates/core/annual_plan_list.html:20
+#: core/templates/core/stock_balance_report.html:42
+msgid "Quarter One"
+msgstr "የመጀመሪያ ሩብ አመት"
+
+#: core/templates/core/annual_plan_list.html:21
+#: core/templates/core/stock_balance_report.html:43
+msgid "Quarter Two"
+msgstr "ሁለተኛ ሩብ አመት"
+
+#: core/templates/core/annual_plan_list.html:22
+#: core/templates/core/stock_balance_report.html:44
+msgid "Quarter Three"
+msgstr "ሶስተኛ ሩብ አመት"
+
+#: core/templates/core/annual_plan_list.html:23
+#: core/templates/core/stock_balance_report.html:45
+msgid "Quarter Four"
+msgstr "አራተኛ ሩብ አመት"
+
+#: core/templates/core/annual_plan_list.html:34
+#: core/templates/core/detail_activity_detail.html:72
+msgid "Plan"
+msgstr "የታቀዱ"
+
+#: core/templates/core/annual_plan_list.html:35
+msgid "Achievement"
+msgstr "የስኬት ተመን"
+
+#: core/templates/core/configuration.html:18
+msgid "Configuration"
+msgstr "ማስተካክያ"
+
+#: core/templates/core/configuration.html:22
+msgid "Import sector and operation plan"
+msgstr "ዘርፍ እና የስራ እቅድ ማስገባት"
+
+#: core/templates/core/configuration.html:28
+#: core/templates/core/configuration.html:47
+#: core/templates/core/configuration.html:66
+#: core/templates/core/configuration.html:93
+msgid "Choose a csv file to import"
+msgstr "የ csv ፋይል ማስገባት"
+
+#: core/templates/core/configuration.html:29
+#: core/templates/core/configuration.html:48
+#: core/templates/core/configuration.html:67
+#: core/templates/core/configuration.html:94
+msgid "Download template csv"
+msgstr "መምሪያ ቅጽ ያውርዱ በ csv"
+
+#: core/templates/core/configuration.html:37
+#: core/templates/core/configuration.html:56
+#: core/templates/core/configuration.html:83
+#: core/templates/core/configuration.html:102
+msgid "Upload"
+msgstr "ጫን"
+
+#: core/templates/core/configuration.html:41
+msgid "Import location tree"
+msgstr "የቦታ ቅደም ተከተል ማስገባት"
+
+#: core/templates/core/configuration.html:60
+msgid "Import activity resources"
+msgstr "ተግባራት ማስፈጸሚያን ማስገባት"
+
+#: core/templates/core/configuration.html:69
+msgid "Select resource type"
+msgstr "ማስፈጸሚያ አይነት ይምረጡ"
+
+#: core/templates/core/configuration.html:71
+#: core/templates/core/detail_activity_detail.html:64
+#: core/views/configuration_views.py:187 core/views/configuration_views.py:251
+msgid "Resource"
+msgstr "ማስፈጸሚያ"
+
+#: core/templates/core/configuration.html:72
+#: core/templates/core/detail_activity_detail.html:68
+#: core/views/configuration_views.py:191
+msgid "Tool"
+msgstr "መሳሪያ"
+
+#: core/templates/core/configuration.html:73
+#: core/templates/core/detail_activity_detail.html:66
+#: core/views/configuration_views.py:195
+msgid "Input"
+msgstr "ግብአት"
+
+#: core/templates/core/configuration.html:87
+msgid "Import annual plan metadata"
+msgstr "አመታዊ እቅድ አፈጻጸም አውርድ"
+
+#: core/templates/core/configuration_base_list.html:40
+#: core/templates/core/resource_list.html:15
+msgid "Create"
+msgstr "ተጠቃሚ መፍጠር"
+
+#: core/templates/core/customer_management/customer_create.html:7
+msgid "Create Customer"
+msgstr "ደንበኛ መፍጠር"
+
+#: core/templates/core/customer_management/customer_list.html:10
+msgid "Customer Management"
+msgstr "የደንበኛ መቆጣጠሪያ"
+
+#: core/templates/core/customer_management/customer_list.html:12
+msgid "Create a Customer"
+msgstr "ደንበኛ መፍጠር"
+
+#: core/templates/core/customer_management/customer_update.html:7
+msgid "Edit Customer"
+msgstr "ደንበኛን ማስተካከል"
+
+#: core/templates/core/dashboard.html:12
+msgid "Income"
+msgstr "ገቢ"
+
+#: core/templates/core/dashboard.html:17
+#: core/templates/core/item_sale_list.html:13
+#: core/templates/core/item_transport_detail.html:13
+#: core/templates/core/item_transport_list.html:12
+#: core/templates/core/location_detail.html:28
+#: core/templates/core/operation_plan.html:21
+#: core/templates/core/seed_test_list.html:12
+msgid "Filter"
+msgstr "አጣራ"
+
+#: core/templates/core/dashboard.html:23
+msgid "Products in Store vs Sold"
+msgstr "በመጋዘን ያሉ ምርቶች እና የተሸጡ ምርቶች ንጽጽር"
+
+#: core/templates/core/dashboard.html:29
+#: core/templates/core/stock_balance_report.html:41
+msgid "Product"
+msgstr "ምርት"
+
+#: core/templates/core/dashboard.html:45
+msgid "Activity and Performance"
+msgstr "ተግባራትና አፈጻጸም"
+
+#: core/templates/core/dashboard.html:60
+#: core/templates/core/resource_detail.html:48
+msgid "Operations"
+msgstr "የስራ ሂደቶች"
+
+#: core/templates/core/dashboard.html:61
+msgid "Todo Tasks"
+msgstr "የሚሰሩ ተግባራት"
+
+#: core/templates/core/dashboard.html:62
+msgid "In Progress Tasks"
+msgstr "በሂደት ላይ ያሉ ስራዎች "
+
+#: core/templates/core/dashboard.html:63
+msgid "Done Tasks"
+msgstr "የተፈጸሙ ስራዎች"
+
+#: core/templates/core/dashboard.html:64
+msgid "completion"
+msgstr "% አፈጻጸም"
+
+#: core/templates/core/detail_activity_detail.html:9
+msgid "Detail activity"
+msgstr "ዝርዝር ተግባራት መጨመር"
+
+#: core/templates/core/detail_activity_detail.html:11
+msgid "Detail activity name"
+msgstr "ዝርዝር ተግባራት"
+
+#: core/templates/core/detail_activity_detail.html:15
+msgid "Date Range"
+msgstr "የጊዜ ገደብ"
+
+#: core/templates/core/detail_activity_detail.html:19
+msgid "Assignee"
+msgstr "መመደብ"
+
+#: core/templates/core/detail_activity_detail.html:23
+msgid "Status"
+msgstr "ሁኔታ"
+
+#: core/templates/core/detail_activity_detail.html:26
+msgid "Finished at"
+msgstr "የተጠናቀቀው በ"
+
+#: core/templates/core/detail_activity_detail.html:28
+msgid "Started at"
+msgstr "የመጀመሪያ_ቀን"
+
+#: core/templates/core/detail_activity_detail.html:73
+msgid "Action"
+msgstr "ቦታ"
+
+#: core/templates/core/detail_activity_detail.html:76
+msgid "Work Norm"
+msgstr "መደበኛ ስራ"
+
+#: core/templates/core/detail_activity_detail.html:79
+msgid "Total cost"
+msgstr "ጠቅላላ ድምር"
+
+#: core/templates/core/detail_activity_detail.html:115
+#: core/templates/core/detail_activity_detail.html:134
+#: core/templates/core/detail_activity_detail.html:152
+msgid "Add/Edit actual"
+msgstr "ትክክለኛውን መጨመር/ማስተካከል"
+
+#: core/templates/core/detail_activity_detail.html:117
+#: core/templates/core/detail_activity_detail.html:135
+#: core/templates/core/detail_activity_detail.html:153
+msgid "see actual details"
+msgstr "ትክክለኛውን በዝርዝር ይመልከቱ"
+
+#: core/templates/core/edit_detail_activity_form.html:12
+msgid "Edit Detail Activity"
+msgstr "ዝርዝር ተግባራት መጨመር"
+
+#: core/templates/core/edit_detail_activity_form.html:29
+#: core/templates/core/edit_detail_activity_form.html:33
+#: core/templates/core/edit_detail_activity_form.html:54
+#: core/templates/core/edit_detail_activity_form.html:75
+#: core/templates/partials/resource-form.html:4
+#: core/templates/partials/resource-form.html:8
+#: core/templates/partials/resource-form.html:28
+#: core/templates/partials/resource-form.html:50
+#: core/views/configuration_views.py:186 core/views/configuration_views.py:304
+#: core/views/configuration_views.py:312
+msgid "Resources"
+msgstr "ማስፈጸሚያ"
+
+#: core/templates/core/edit_detail_activity_form.html:46
+#: core/templates/partials/resource-form.html:20
+msgid "Add a resource"
+msgstr "ማስፈጸሚያ መጨመር"
+
+#: core/templates/core/edit_detail_activity_form.html:50
+#: core/templates/partials/resource-form.html:24
+#: core/views/configuration_views.py:194 core/views/configuration_views.py:308
+msgid "Inputs"
+msgstr "ግብኣት"
+
+#: core/templates/core/edit_detail_activity_form.html:67
+#: core/templates/partials/resource-form.html:42
+msgid "Add input"
+msgstr "ግብኣት መጨመር"
+
+#: core/templates/core/edit_detail_activity_form.html:71
+#: core/templates/partials/resource-form.html:46
+#: core/views/configuration_views.py:190 core/views/configuration_views.py:306
+msgid "Tools"
+msgstr "መሳሪያዎቸ"
+
+#: core/templates/core/edit_detail_activity_form.html:88
+#: core/templates/partials/resource-form.html:62
+msgid "Add a tool"
+msgstr "መሳሪያዎቸ መጨመር"
+
+#: core/templates/core/form_submission_detail.html:6
+msgid "Form Submission Detail"
+msgstr "ቅጽ ማስገቢያ ዝርዝር"
+
+#: core/templates/core/form_submission_detail.html:10
+#: core/templates/core/resource_detail.html:13 core/views/location_views.py:39
+msgid "Name"
+msgstr "ስም"
+
+#: core/templates/core/form_submission_list.html:11
+msgid "Form Submission List"
+msgstr "ቅጽ ማስገቢያ ዝርዝር"
+
+#: core/templates/core/item_inventory_detail.html:7
+msgid "Item Inventory of"
+msgstr "የአይነት ዝርዝር"
+
+#: core/templates/core/item_inventory_list.html:9 core/views/item_views.py:185
+#: core/views/item_views.py:186 core/views/item_views.py:236
+#: core/views/item_views.py:237
+msgid "Item Inventory"
+msgstr "የአይነት ዝርዝር"
+
+#: core/templates/core/item_list.html:10 core/views/configuration_views.py:346
+msgid "Items"
+msgstr "አይነት"
+
+#: core/templates/core/item_list.html:11
+msgid "Add an Item"
+msgstr "የአይነት ይጨምሩ"
+
+#: core/templates/core/item_purchase_detail.html:10
+#: core/templates/core/item_purchase_list.html:9 core/views/report_views.py:506
+#: core/views/report_views.py:523 core/views/report_views.py:530
+msgid "Purchase Report"
+msgstr "ግዢ ሪፖርት"
+
+#: core/templates/core/item_receive_detail.html:10
+#: core/templates/core/item_receive_list.html:9 core/views/report_views.py:148
+#: core/views/report_views.py:214
+msgid "Receive Report"
+msgstr "የመቀበያ ሪፖርት"
+
+#: core/templates/core/item_sale_detail.html:10
+#: core/templates/core/item_sale_list.html:9 core/views/report_views.py:586
+#: core/views/report_views.py:647 core/views/report_views.py:651
+msgid "Sale Report"
+msgstr "የሽያጭ ሪፖርት"
+
+#: core/templates/core/item_transport_detail.html:9
+#: core/templates/core/item_transport_list.html:8
+#: core/views/report_views.py:377 core/views/report_views.py:394
+#: core/views/report_views.py:401
+msgid "Transportation Report"
+msgstr "የመጓጓዣ ሪፖርት"
+
+#: core/templates/core/location_form.html:48
+#: core/templates/core/location_form.html:63
+#: core/templates/core/muti_select_location_form.html:18
+#: core/templates/core/muti_select_location_form.html:33
+msgid "Select location"
+msgstr "ቦታ ይምረጡ"
+
+#: core/templates/core/location_list.html:9
+#: core/templates/core/performance_report.html:36
+#: core/templates/core/stock_balance_report.html:24
+#: core/views/configuration_views.py:644 core/views/configuration_views.py:692
+msgid "Location"
+msgstr "ቦታ"
+
+#: core/templates/core/location_list.html:11
+msgid "Add a Location"
+msgstr "ቦታ ጨምር"
+
+#: core/templates/core/operation_plan.html:11
+#: core/templates/core/operation_plan_overview.html:25
+msgid "Operation plans"
+msgstr "የክወና ዕቅዶች"
+
+#: core/templates/core/operation_plan.html:15
+#: core/templates/core/operation_plan_overview.html:27
+msgid "Create a Plan"
+msgstr "ዕቅድ ይፍጠሩ"
+
+#: core/templates/core/operation_plan_detail.html:18
+#: core/templates/core/operation_plan_overview.html:68
+#: core/templates/core/performance_report.html:28
+msgid "Operation"
+msgstr "ክወና"
+
+#: core/templates/core/operation_plan_detail.html:33
+msgid "Activities"
+msgstr "ተግባራት"
+
+#: core/templates/core/operation_plan_detail.html:34
+msgid "Add an Activity"
+msgstr "ተግባራት መጨመር"
+
+#: core/templates/core/operation_plan_overview.html:34
+msgid "Past Plans"
+msgstr "ያለፉ ዕቅዶች"
+
+#: core/templates/core/operation_plan_overview.html:39
+msgid "Current Plans"
+msgstr "የአሁን ዕቅዶች"
+
+#: core/templates/core/operation_plan_overview.html:43
+msgid "Future Plans"
+msgstr "የወደፊት ዕቅዶች"
+
+#: core/templates/core/operation_plan_overview.html:56
+#: core/templates/core/operation_plan_overview.html:58
+#: core/templates/core/operation_plan_overview.html:60
+msgid "All operation plans list"
+msgstr "ሙሉ የክወና ዕቅድ ዝርዝር"
+
+#: core/templates/core/operation_plan_overview.html:67
+#: core/templates/core/performance_report.html:20
+#: core/views/configuration_views.py:85
+msgid "Sector"
+msgstr "ዘርፍ"
+
+#: core/templates/core/operation_plan_overview.html:69
+msgid "Number of plans"
+msgstr "የዕቅዶች ብዛት"
+
+#: core/templates/core/operation_plan_overview.html:70
+msgid "Year"
+msgstr "አመት"
+
+#: core/templates/core/performance_report.html:18
+msgid "Performance Report"
+msgstr "የአፈጻጸም ሪፖርት"
+
+#: core/templates/core/performance_report.html:22
+msgid "Select Sector"
+msgstr "ዘርፍ ይምረጡ"
+
+#: core/templates/core/performance_report.html:30
+msgid "Select Operation"
+msgstr "ክወና ይምረጡ"
+
+#: core/templates/core/performance_report.html:38
+msgid "Select Location"
+msgstr "ቦታ ይምረጡ"
+
+#: core/templates/core/performance_report.html:44
+msgid "Detail Activity"
+msgstr "ዝርዝር ተግባራት መጨመር"
+
+#: core/templates/core/performance_report.html:46
+msgid "Select Detail Activity"
+msgstr "ዝርዝር ተግባራት ይምረጡ"
+
+#: core/templates/core/performance_report.html:52
+msgid "Report Type"
+msgstr "የሪፖርት አይነት"
+
+#: core/templates/core/performance_report.html:54
+msgid "Select Report Type"
+msgstr "የሪፖርት አይነት"
+
+#: core/templates/core/performance_report.html:55
+msgid "Monthly"
+msgstr "ወርሃዊ"
+
+#: core/templates/core/performance_report.html:57
+msgid "Quarterly"
+msgstr "የሩብ አመት"
+
+#: core/templates/core/performance_report.html:58
+msgid "Yearly"
+msgstr "አመታዊ"
+
+#: core/templates/core/resource_detail.html:9
+#: core/templates/core/sector_detail.html:9 core/views/location_views.py:432
+msgid "Details"
+msgstr "ዝርዝሮች"
+
+#: core/templates/core/resource_detail.html:18
+msgid "Norm Unit"
+msgstr "የስራ ተመን"
+
+#: core/templates/core/resource_detail.html:22
+msgid "Achievement Unit"
+msgstr "የስኬት ተመን"
+
+#: core/templates/core/resource_detail.html:25
+msgid "Payment Unit"
+msgstr "የክፍያ ተመን"
+
+#: core/templates/core/resource_detail.html:28
+msgid "Utility Rate"
+msgstr "የአጠቃቀም ምዘና"
+
+#: core/templates/core/resource_detail.html:31
+msgid "Completion Rate"
+msgstr "የአፈጻጸም ምዘና"
+
+#: core/templates/core/resource_detail.html:34
+msgid "Formula Type"
+msgstr "የቀመር አይነት"
+
+#: core/templates/core/resource_detail.html:38
+#: core/templates/core/sector_list.html:9 core/views/configuration_views.py:71
+#: core/views/configuration_views.py:147
+msgid "Sectors"
+msgstr "ዘርፎች"
+
+#: core/templates/core/resource_list.html:10
+#, fuzzy
+#| msgid "Add a tool"
+msgid "Add a"
+msgstr "መሳሪያዎቸ መጨመር"
+
+#: core/templates/core/role_permissions/add_group_modal.html:7
+msgid "Add new group"
+msgstr "አዲስ ቡድን መጨመር"
+
+#: core/templates/core/role_permissions/edit_role_permissions.html:13
+msgid "Edit Role"
+msgstr "ሚናን ማስተካከል"
+
+#: core/templates/core/role_permissions/role_permission.html:14
+msgid "Add role"
+msgstr "ሚና መጨመር"
+
+#: core/templates/core/role_permissions/role_permission.html:27
+#: core/templates/partials/operation-plan-actions.html:17
+msgid "Delete"
+msgstr "አጥፋ"
+
+#: core/templates/core/sector_detail.html:13
+msgid "Sector Name"
+msgstr "የዘርፍ ስም"
+
+#: core/templates/core/sector_detail.html:17
+msgid "Description"
+msgstr "ገለጻ"
+
+#: core/templates/core/sector_detail.html:20
+msgid "Date Created"
+msgstr "የተፈጠረበት ቀን"
+
+#: core/templates/core/sector_list.html:10
+msgid "Add a Sector"
+msgstr "ዘርፍ ይጨምሩ"
+
+#: core/templates/core/sector_list.html:15
+msgid "Create Sector"
+msgstr "ዘርፍ ይፍጠሩ"
+
+#: core/templates/core/seed_test_list.html:8
+msgid "Seed Testing Report"
+msgstr "የዘር ፍተሻ ሪፖርት"
+
+#: core/templates/core/stock_balance_report.html:6
+msgid "Stock Balance Report"
+msgstr "የክምችት ንብረት ሪፖርት"
+
+#: core/templates/core/stock_balance_report.html:27
+msgid "Pick one"
+msgstr "አንዱን ይምረጡ"
+
+#: core/templates/core/stock_balance_report.html:52
+msgid "Beginning Balance"
+msgstr "የጅማሬ ሂሳብ"
+
+#: core/templates/core/stock_balance_report.html:53
+msgid "Production"
+msgstr "ምርት"
+
+#: core/templates/core/stock_balance_report.html:54
+msgid "Sold"
+msgstr "የተሸጠ"
+
+#: core/templates/core/stock_balance_report.html:55
+msgid "Net Balance"
+msgstr "የተጣራ ቀሪ"
+
+#: core/templates/core/user_management/user_create.html:7
+msgid "Create User"
+msgstr "ተጠቃሚ መፍጠር"
+
+#: core/templates/core/user_management/user_list.html:10
+msgid "User Management"
+msgstr "ተጠቃሚ መቆጣጠሪያ"
+
+#: core/templates/core/user_management/user_list.html:12
+msgid "Create a User"
+msgstr "ተጠቃሚ መፍጠር"
+
+#: core/templates/core/user_management/user_update.html:7
+msgid "Edit User"
+msgstr "ተጠቃሚን ማስተካከል"
+
+#: core/templates/partials/activity-plan-actions.html:14
+#: core/templates/partials/base-configuration-action.html:7
+#: core/templates/partials/configuration-update.html:7
+#: core/templates/partials/customer-actions.html:8
+#: core/templates/partials/detail-activity-actions.html:7
+#: core/templates/partials/location-action.html:7
+#: core/templates/partials/location-table-actions.html:7
+#: core/templates/partials/location-update.html:7
+#: core/templates/partials/operation-plan-actions.html:8
+#: core/templates/partials/operation-type-action.html:7
+#: core/templates/partials/resource-table-actions.html:7
+#: core/templates/partials/sector-table-actions.html:7
+#: core/templates/partials/users-action.html:8
+msgid "Edit"
+msgstr "ማስተካከል"
+
+#: core/templates/partials/activity-plan-actions.html:18
+#: core/templates/partials/base-actions-partial.html:4
+#: core/templates/partials/form-submission-action.html:8
+#: core/templates/partials/item-purchase-actions.html:4
+#: core/templates/partials/item-receive-actions.html:4
+#: core/templates/partials/item-sale-actions.html:4
+#: core/templates/partials/item-transport-actions.html:4
+#: core/templates/partials/resource-table-actions.html:8
+#: core/templates/partials/sector-table-actions.html:8
+msgid "View Detail"
+msgstr "ዝርዝር ይመልከቱ"
+
+#: core/templates/partials/actual-activity-update.html:8
+msgid "Edit Actual Activity Resource"
+msgstr "ትክክለኛውን ተግባራት መረጃን ማስተካከል"
+
+#: core/templates/partials/actual_activity_form.html:7
+msgid "Add Actual Activity Resource"
+msgstr "ትክክለኛው ተግባራት መረጃን መጨመር"
+
+#: core/templates/partials/detail-activity-actions.html:11
+msgid "View detail"
+msgstr "ዝርዝር ይመልከቱ"
+
+#: core/templates/partials/hq-batch-info.html:4
+msgid "List of Batches"
+msgstr "የባችች ዝርዝር"
+
+#: core/templates/partials/item-inventory-table-actions.html:3
+#: core/templates/partials/location-table-actions.html:9
+#: core/templates/partials/operation-plan-actions.html:10
+msgid "View Details"
+msgstr "ዝርዝር ይመልከቱ"
+
+#: core/templates/partials/operation-plan-actions.html:3
+msgid "Add Activity"
+msgstr "ተግባራት መጨመር"
+
+#: core/templates/partials/operation-plan-actions.html:24
+msgid "Finalize"
+msgstr "ማጠናቀቅ"
+
+#: core/templates/partials/operation-plan-actions.html:31
+msgid "Duplicate"
+msgstr "ማብዛት"
+
+#: core/templates/partials/operation-plan-duplicate.html:8
+msgid "Duplicate Operation Plan"
+msgstr "የክወና እቅድ ማብዛት"
+
+#: core/templates/partials/operation-plan-update.html:7
+msgid "Edit Operation Plan"
+msgstr "የክወና እቅድ ማስተካከል"
+
+#: core/templates/partials/resource-form.html:30
+msgid ">Planned achievement"
+msgstr "የታቀደ ግብ"
+
+#: core/templates/partials/resource-form.html:32
+msgid ">Payment"
+msgstr "ክፍያ"
+
+#: core/views/configuration_views.py:48 core/views/configuration_views.py:156
+#: core/views/configuration_views.py:422 core/views/configuration_views.py:495
+#: core/views/configuration_views.py:663 core/views/item_views.py:37
+#: core/views/item_views.py:250 core/views/location_views.py:25
+#: core/views/location_views.py:306 core/views/report_views.py:59
+#: core/views/report_views.py:224 core/views/report_views.py:407
+#: core/views/report_views.py:536 core/views/report_views.py:657
+#: core/views/report_views.py:1002 core/views/report_views.py:1281
+#: core/views/report_views.py:1445
+msgid "Actions"
+msgstr "ቦታ"
+
+#: core/views/configuration_views.py:49
+msgid "Created Date"
+msgstr "ተጠቃሚ መፍጠር"
+
+#: core/views/configuration_views.py:116
+msgid "Sector created successfully"
+msgstr "ዘርፍ በተሳካ ሁኔታ ተፈጥሯል"
+
+#: core/views/configuration_views.py:133
+msgid "Sector deleted successfully"
+msgstr "ዘርፍ በተሳካ ሁኔታ ተሰርዟል"
+
+#: core/views/configuration_views.py:229
+msgid "{resource_type.lower().capitalize()} created successfully"
+msgstr "በተሳካ ሁኔታ ተፈጥሯል""
+
+#: core/views/configuration_views.py:269
+msgid "{self.object.type.lower().capitalize()} updated successfully"
+msgstr "በተሳካ ሁኔታ ተሻሽሏል"
+
+#: core/views/configuration_views.py:289
+msgid "{self.object.type.lower().capitalize()} deleted successfully"
+msgstr "በተሳካ ሁኔታ ተፈጥሯል"
+
+#: core/views/configuration_views.py:363
+msgid "Item created successfully"
+msgstr "ንጥል በተሳካ ሁኔታ ተፈጥሯል"
+
+#: core/views/configuration_views.py:387
+msgid "Operation Type created successfully"
+msgstr "የክወና አይነት በተሳካ ሁኔታ ተፈጥሯል"
+
+#: core/views/configuration_views.py:403
+msgid "Operation Type"
+msgstr "ክወና"
+
+#: core/views/configuration_views.py:409
+msgid "Operation type updated successfully"
+msgstr "የክወና አይነት በተሳካ ሁኔታ ተሻሽሏል"
+
+#: core/views/configuration_views.py:446 core/views/configuration_views.py:447
+msgid "Operation Types"
+msgstr "የክወና ዕቅዶች"
+
+#: core/views/configuration_views.py:466
+msgid "Activity Type created successfully"
+msgstr "የተግባር አይነት በተሳካ ሁኔታ ተፈጥሯል"
+
+#: core/views/configuration_views.py:481
+msgid "Activity Type"
+msgstr "ዝርዝር ተግባራት"
+
+#: core/views/configuration_views.py:487
+msgid "Activity Type updated successfully"
+msgstr "የተግባር አይነት በተሳካ ሁኔታ ተሻሽሏል"
+
+#: core/views/configuration_views.py:517 core/views/configuration_views.py:518
+msgid "Activity Types"
+msgstr "ዝርዝር ተግባራት"
+
+#: core/views/configuration_views.py:537
+msgid "Detail Activity Type created successfully"
+msgstr "የዝርዝር ተግባር አይነት በተሳካ ሁኔታ ተፈጥሯል"
+
+#: core/views/configuration_views.py:552
+msgid "Detail Activity Type"
+msgstr "ዝርዝር ተግባራት መጨመር"
+
+#: core/views/configuration_views.py:558
+msgid "Detail Activity Type updated successfully"
+msgstr "ዝርዝር ተግባራት መጨመር"
+
+#: core/views/configuration_views.py:613 core/views/configuration_views.py:614
+msgid "Detail Activity Types"
+msgstr "ዝርዝር ተግባራት መጨመር"
+
+#: core/views/configuration_views.py:628
+msgid "Location created successfully"
+msgstr "ቦታ በተሳካ ሁኔታ ተፈጥሯል"
+
+#: core/views/configuration_views.py:650
+msgid "Location updated successfully"
+msgstr "ቦታ በተሳካ ሁኔታ ተሻሽሏል"
+
+#: core/views/configuration_views.py:693 core/views/location_views.py:60
+#: core/views/location_views.py:61 core/views/location_views.py:429
+#: core/views/location_views.py:435
+msgid "Locations"
+msgstr "ቦታ"
+
+#: core/views/item_views.py:36 core/views/item_views.py:121
+#: core/views/item_views.py:134 core/views/item_views.py:275
+#: core/views/location_views.py:133 core/views/location_views.py:267
+#: core/views/report_views.py:60 core/views/report_views.py:110
+#: core/views/report_views.py:153 core/views/report_views.py:185
+#: core/views/report_views.py:225 core/views/report_views.py:275
+#: core/views/report_views.py:302 core/views/report_views.py:343
+#: core/views/report_views.py:478 core/views/report_views.py:592
+#: core/views/report_views.py:609 core/views/report_views.py:781
+#: core/views/report_views.py:791 core/views/report_views.py:826
+#: core/views/report_views.py:839 core/views/report_views.py:875
+#: core/views/report_views.py:896 core/views/report_views.py:932
+#: core/views/report_views.py:961 core/views/report_views.py:997
+#: core/views/report_views.py:1047 core/views/report_views.py:1081
+#: core/views/report_views.py:1110 core/views/report_views.py:1227
+#: core/views/report_views.py:1257
+msgid "Species"
+msgstr "ዝርያ"
+
+#: core/views/item_views.py:38
+msgid "Item Type"
+msgstr "የሪፖርት አይነት"
+
+#: core/views/item_views.py:88 core/views/item_views.py:96
+#: core/views/item_views.py:104 core/views/item_views.py:112
+#: core/views/location_views.py:75
+msgid "Item"
+msgstr "አይነት"
+
+#: core/views/item_views.py:191 core/views/item_views.py:249
+#: core/views/report_views.py:61 core/views/report_views.py:226
+#: core/views/report_views.py:1114 core/views/report_views.py:1282
+msgid "Amount"
+msgstr "መጠን"
+
+#: core/views/item_views.py:215
+msgid "Empty transaction"
+msgstr "ግብይት የሌለው"
+
+#: core/views/item_views.py:240
+msgid "Inventory List"
+msgstr "የአይነት ዝርዝር"
+
+#: core/views/item_views.py:243
+msgid "Inventory Detail"
+msgstr "የአይነት ዝርዝር"
+
+#: core/views/item_views.py:277
+msgid "Round"
+msgstr "ዙር"
+
+#: core/views/item_views.py:284
+msgid "Untested"
+msgstr "ያልተመረመረ"
+
+#: core/views/location_views.py:23
+msgid "Number of sub locations"
+msgstr "የዕቅዶች ብዛት"
+
+#: core/views/location_views.py:103
+msgid "Total no of batches of seed in store"
+msgstr "በማከማቻው ውስጥ ያሉት አጠቃላይ የዝርያዎች ብዛት"
+
+#: core/views/location_views.py:110
+msgid "Initial (Round 1) tested batches"
+msgstr "የመጀመሪያ (ዙር 1) የተመረምሩ ስብስቦች"
+
+#: core/views/location_views.py:115
+msgid "Initial (Round 2) tested batches"
+msgstr "ሁለተኛ (ዙር 2) የተመረምሩ ስብስቦች"
+
+#: core/views/location_views.py:120
+msgid "Initial (Round 3) tested batches"
+msgstr "ሶስተኛ (ዙር 3) የተመረምሩ ስብስቦች"
+
+#: core/views/location_views.py:125
+msgid "Quarantine Tested Batches"
+msgstr "Quarantine የተመረምሩ ስብስቦች"
+
+#: core/views/location_views.py:131 core/views/location_views.py:299
+msgid "Total"
+msgstr "ድምር"
+
+#: core/views/location_views.py:277
+msgid "Sowed Seed"
+msgstr "የተዘራ ዘር"
+
+#: core/views/location_views.py:284
+msgid "Germinated Seed"
+msgstr "የበቀለ ዘር"
+
+#: core/views/location_views.py:291
+msgid "Grade 1 Seed"
+msgstr "ደረጃ 1 ዘር"
+
+#: core/views/location_views.py:432
+msgid "Inventory"
+msgstr "የአይነት ዝርዝር"
+
+#: core/views/report_views.py:114 core/views/report_views.py:454
+#: core/views/report_views.py:552
+msgid "Location Type"
+msgstr "ቦታ"
+
+#: core/views/report_views.py:154 core/views/report_views.py:274
+msgid "Item Name"
+msgstr "የሪፖርት አይነት"
+
+#: core/views/report_views.py:217
+msgid "Receive Reports"
+msgstr "የመቀበያ ሪፖርት"
+
+#: core/views/report_views.py:218
+msgid "Recieve Report"
+msgstr "የመቀበያ ሪፖርት"
+
+#: core/views/report_views.py:305 core/views/report_views.py:346
+msgid "From"
+msgstr "ከ"
+
+#: core/views/report_views.py:308 core/views/report_views.py:349
+msgid "To"
+msgstr "እስከ"
+
+#: core/views/report_views.py:313
+msgid "From Location Type"
+msgstr "ቦታ"
+
+#: core/views/report_views.py:319
+msgid "To Location Type"
+msgstr "ቦታ"
+
+#: core/views/report_views.py:398
+msgid "Transportation Reports"
+msgstr "የመጓጓዣ ሪፖርት"
+
+#: core/views/report_views.py:425
+msgid "Total Cost"
+msgstr "አጠቃላይ ወጪ"
+
+#: core/views/report_views.py:446 core/views/report_views.py:681
+#: core/views/report_views.py:843 core/views/report_views.py:900
+#: core/views/report_views.py:938 core/views/report_views.py:965
+#: core/views/report_views.py:1051 core/views/report_views.py:1085
+#: core/views/report_views.py:1231 core/views/report_views.py:1261
+#: core/views/report_views.py:1397 core/views/report_views.py:1425
+#: core/views/report_views.py:1516 core/views/report_views.py:1566
+#: core/views/report_views.py:1748
+msgid "From Date"
+msgstr "ከ ቀን"
+
+#: core/views/report_views.py:449 core/views/report_views.py:684
+#: core/views/report_views.py:846 core/views/report_views.py:903
+#: core/views/report_views.py:941 core/views/report_views.py:968
+#: core/views/report_views.py:1054 core/views/report_views.py:1088
+#: core/views/report_views.py:1234 core/views/report_views.py:1264
+#: core/views/report_views.py:1400 core/views/report_views.py:1428
+#: core/views/report_views.py:1519 core/views/report_views.py:1569
+#: core/views/report_views.py:1751
+msgid "To Date"
+msgstr "እስከ ቀን"
+
+#: core/views/report_views.py:527
+msgid "Purchase Reports"
+msgstr "ግዢ ሪፖርት"
+
+#: core/views/report_views.py:610
+msgid "Total Price"
+msgstr "አጠቃላይ ዋጋ"
+
+#: core/views/report_views.py:650
+msgid "Sale Reports"
+msgstr "የሽያጭ ሪፖርት"
+
+#: core/views/report_views.py:750 core/views/report_views.py:751
+#: core/views/report_views.py:765 core/views/report_views.py:766
+#: core/views/report_views.py:775
+msgid "Thinning Sale Report"
+msgstr "የሽያጭ ሪፖርት"
+
+#: core/views/report_views.py:772
+msgid "Thinning Sale Reports"
+msgstr "የሽያጭ ሪፖርት"
+
+#: core/views/report_views.py:820
+msgid "Testing Report"
+msgstr "የዘር ፍተሻ ሪፖርት"
+
+#: core/views/report_views.py:867 core/views/report_views.py:868
+msgid "Handoff Report"
+msgstr "የሽያጭ ሪፖርት"
+
+#: core/views/report_views.py:924 core/views/report_views.py:925
+msgid "Beatup Report"
+msgstr "የሽያጭ ሪፖርት"
+
+#: core/views/report_views.py:989 core/views/report_views.py:990
+msgid "Survival Count Report"
+msgstr "የሽያጭ ሪፖርት"
+
+#: core/views/report_views.py:1151 core/views/report_views.py:1152
+#: core/views/report_views.py:1177 core/views/report_views.py:1178
+#, python-brace-format
+msgid "{friendly_name} Thinning Report"
+msgstr "{friendly_name} የምልመላ ሪፖርት"
+
+#: core/views/report_views.py:1189
+msgid "Thinning Report"
+msgstr "የደን ማሳሳት ሪፖርት"
+
+#: core/views/report_views.py:1343 core/views/report_views.py:1362
+#: core/views/report_views.py:1363 core/views/report_views.py:1372
+msgid "Harvesting Report"
+msgstr "የዘር ፍተሻ ሪፖርት"
+
+#: core/views/report_views.py:1344 core/views/report_views.py:1369
+msgid "Harvesting Reports"
+msgstr "የዘር ፍተሻ ሪፖርት"
+
+#: core/views/report_views.py:1473 core/views/report_views.py:1492
+#: core/views/report_views.py:1493 core/views/report_views.py:1502
+msgid "Timely Harvesting Report"
+msgstr "የዘር ፍተሻ ሪፖርት"
+
+#: core/views/report_views.py:1474 core/views/report_views.py:1499
+msgid "Timely Harvesting Reports"
+msgstr "የዘር ፍተሻ ሪፖርት"
+
+#: core/views/report_views.py:1540 core/views/report_views.py:1541
+msgid "Downtime Report"
+msgstr "የመቀበያ ሪፖርት"
+
+#: core/views/report_views.py:1586 core/views/report_views.py:1587
+msgid "Operational Forest Inventory"
+msgstr "የደን ክምቸት ቆጠራ"
+
+#: core/views/report_views.py:1621 core/views/report_views.py:1622
+msgid "Lumber Stored Report"
+msgstr "የአፈጻጸም ሪፖርት"
+
+#: core/views/report_views.py:1649 core/views/report_views.py:1650
+msgid "Factory Production Report"
+msgstr "የመጓጓዣ ሪፖርት"
+
+#: core/views/report_views.py:1688 core/views/report_views.py:1689
+msgid "Product Giveaway Report"
+msgstr "የሚሰጡ ሪፖርት"
+
+#: core/views/report_views.py:1725 core/views/report_views.py:1726
+msgid "Job Creation Report"
+msgstr "የመጓጓዣ ሪፖርት"
+
+#: core/views/report_views.py:1768 core/views/report_views.py:1769
+msgid "Forest Inventory Report"
+msgstr "የአይነት ዝርዝር"
+
+#~ msgid "end_date"
+#~ msgstr "የመጨረሻ_ቀን"
+
+#~ msgid "name"
+#~ msgstr "ስም"
+
+#~ msgid "Role Management"
+#~ msgstr "ሚና መቆጣጠሪያ"
+
+#~ msgid "showEdit"
+#~ msgstr "የተስተካከለ አሳይ"
+
+#~ msgid "Resource name"
+#~ msgstr "ማስፈጸሚያ ስም"
+
+#~ msgid "page"
+#~ msgstr "ገጽ"
+
+#~ msgid "Add a {{ title }}"
+#~ msgstr "{{ ርዕስ }} ይጨምሩ"
+
+#~ msgid "Create {{ title }}"
+#~ msgstr "{{ ርዕስ }} ይምረጡ"
+
+#~ msgid "month"
+#~ msgstr "ወር"

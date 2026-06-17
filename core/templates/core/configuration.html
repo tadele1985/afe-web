@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% block title %}Configuration{% endblock %}
+{% block javascript %}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css"
+          rel="stylesheet"
+          type="text/css">
+    <script src="{% static 'modal.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+    <div class="drawer drawer-end">
+        <input id="my-drawer-4" type="checkbox" class="drawer-toggle hidden" />
+        <input id="my-drawer-5" type="checkbox" class="drawer-toggle hidden" />
+        <div class="drawer-content">
+            <div class="flex justify-between">
+                <h2 class="text-2xl font-bold">{% trans "Configuration" %}</h2>
+            </div>
+            <div class="mt-10 overflow-x-auto grid grid-cols-3 gap-2">
+                <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow mx-auto">
+                    <h3 class="font-bold text-xl mb-3 mx-auto">{% trans "Import sector and operation plan" %}</h3>
+                    <form class="space-y-4"
+                        action="{% url 'core:upload_operation_plans' %}"
+                        method="POST"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h3 class="font-bold text-lg mb-3 mx-auto">{% trans "Choose a csv file to import" %}:</h3>
+                        <a class="font-medium text-blue-600 underline cursor-pointer" href="/static/downloadable/Operation Plan Template.csv" download>{% trans "Download template csv" %}</a>
+                        <div class="relative">
+                            <input id="csv_file"
+                                type="file"
+                                name="csv_file"
+                                class="file-input file-input-bordered w-full"
+                                placeholder="Select File">
+                        </div>
+                        <button id="upload" type="submit" class="btn btn-neutral float-right">{% trans "Upload" %}</button>
+                    </form>
+                </div>
+                <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow mx-auto">
+                    <h3 class="font-bold text-xl mb-3 mx-auto">{% trans "Import location tree" %}</h3>
+                    <form class="space-y-4"
+                        action="{% url 'core:upload_location_tree' %}"
+                        method="POST"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h3 class="font-bold text-lg mb-3 mx-auto">{% trans "Choose a csv file to import" %}:</h3>
+                        <a class="font-medium text-blue-600 underline cursor-pointer" href="/static/downloadable/Location Template.csv" download>{% trans "Download template csv" %}</a>
+                        <div class="relative">
+                            <input id="csv_file"
+                                type="file"
+                                name="csv_file"
+                                class="file-input file-input-bordered w-full w-full"
+                                placeholder="Select File">
+                        </div>
+                        <button id="upload" type="submit" class="btn btn-neutral float-right">{% trans "Upload" %}</button>
+                    </form>
+                </div>
+                <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow mx-auto">
+                    <h3 class="font-bold text-xl mb-3 mx-auto">{% trans "Import activity resources" %}</h3>
+                    <form class="space-y-4"
+                        action="{% url 'core:upload_resource_types' %}"
+                        method="POST"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h3 class="font-bold text-lg mb-3 mx-auto">{% trans "Choose a csv file to import" %}:</h3>
+                        <a class="font-medium text-blue-600 underline cursor-pointer" href="/static/downloadable/Resource Template.csv" download>{% trans "Download template csv" %}</a>
+                        <div>
+                            <label>{% trans "Select resource type" %}:</select>
+                            <select class="select select-bordered w-full max-w-xs" name="type">
+                                <option value="RESOURCE">{% trans "Resource" %}</option>
+                                <option value="TOOL">{% trans "Tool" %}</option>
+                                <option value="INPUT">{% trans "Input" %}</option>
+                            </select>
+                        </div>
+                        <div class="relative">
+                            <input id="csv_file"
+                                type="file"
+                                name="csv_file"
+                                class="file-input file-input-bordered w-full w-full"
+                                placeholder="Select File">
+                        </div>
+                        <button id="upload" type="submit" class="btn btn-neutral float-right">{% trans "Upload" %}</button>
+                    </form>
+                </div>
+                <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow mx-auto">
+                    <h3 class="font-bold text-xl mb-3 mx-auto">{% trans "Import annual plan metadata" %}</h3>
+                    <form class="space-y-4"
+                        action="{% url 'core:upload_annual_plan_metadata' %}"
+                        method="POST"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h3 class="font-bold text-lg mb-3 mx-auto">{% trans "Choose a csv file to import" %}:</h3>
+                        <a class="font-medium text-blue-600 underline cursor-pointer" href="/static/downloadable/Annual Plan Metadata Template.csv" download>{% trans "Download template csv" %}</a>
+                        <div class="relative">
+                            <input id="csv_file"
+                                type="file"
+                                name="csv_file"
+                                class="file-input file-input-bordered w-full w-full"
+                                placeholder="Select File">
+                        </div>
+                        <button id="upload" type="submit" class="btn btn-neutral float-right">{% trans "Upload" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

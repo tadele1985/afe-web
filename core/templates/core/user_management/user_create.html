@@ -1,0 +1,14 @@
+{% load i18n %}
+<form class="flex flex-col px-4 h-full" autocomplete="off"
+    hx-post="{% url "core:user_create" %}"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    <div class="flex-1 flex flex-col gap-2 h-full">
+        <h1 class="font-bold text-lg">{% trans "Create User" %}</h1>
+        {{ form }}
+    
+        <div class="flex justify-between gap-4 py-4">
+            <input type="submit" class="btn btn-neutral flex-1" value="Submit">
+        </div>
+    </div>
+</form>

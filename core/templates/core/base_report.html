@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+
+{% block title %}
+    {{ page }}
+{% endblock title %}
+
+{% block content %}
+    {% if breadcrumbs %}
+        {% include "partials/breadcrumb.html" with breadcrumbs=breadcrumbs %}
+    {% endif %}
+    <div x-data="{showEdit: false}">
+        <h2 class="text-lg font-bold">{% trans report_name %}</h2>
+        {% if filter %}
+            <form method="get" class="mt-5 flex flex-wrap gap-4 items-end">
+
+                {% for field in filter.form %}
+                    {% if field.name == "date__gt" or field.name == "date__lt" %}
+                        <div class="flex flex-col gap-1" style="position:relative;">
+                            <label for="{{ field.id_for_label }}" class="text-sm font-medium">
+                                {{ field.label }}
+                            </label>
+                            <div style="display:flex;align-items:center;gap:4px;">
+                                {{ field }}
+                                <button type="button"
+                                    data-eth-target="{{ field.id_for_label }}"
+                                    style="background:none;border:1px solid #ccc;border-radius:6px;
+                                           padding:4px 8px;cursor:pointer;font-size:16px;"
+                                    title="{% trans 'Pick date' %}">
+                                    &#128197;
+                                </button>
+                            </div>
+                            <div id="picker_{{ field.id_for_label }}"
+                                 style="display:none;
+                                        position:absolute;
+                                        top:100%;
+                                        left:0;
+                                        z-index:9999;
+                                        background:white;
+                                        border:1px solid #ccc;
+                                        border-radius:8px;
+                                        padding:12px;
+                                        box-shadow:0 4px 24px rgba(0,0,0,0.2);
+                                        min-width:260px;
+                                        font-family:inherit;
+                                        margin-top:4px;">
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex flex-col gap-1">
+                            <label for="{{ field.id_for_label }}" class="text-sm font-medium">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <input type="submit" class="btn btn-neutral" value="{% trans 'Filter' %}">
+                <a href="{{ clear_url }}" class="btn btn-outline">{% trans "Clear" %}</a>
+                <a onclick="append_report_export_query_param('_export', 'xlsx');"
+                   class="btn btn-neutral ml-8">{% trans "Download" %}</a>
+
+            </form>   <!-- ← was missing -->
+        {% endif %}
+
+        <div>{% render_table table %}</div>
+    </div>   <!-- ← closes x-data div -->
+{% endblock content %}
+
+{% block body_end %}   <!-- ← was missing, script was floating inside content -->
+<script>
+  const ETH_MONTHS = [
+    "መስከረም","ጥቅምት","ህዳር","ታህሳስ","ጥር","የካቲት",
+    "መጋቢት","ሚያዝያ","ግንቦት","ሰኔ","ሐምሌ","ነሃሴ","ጳጉሜ"
+  ];
+
+  function gregorianToJDN(y, m, d) {
+    return Math.floor((1461 * (y + 4800 + Math.floor((m - 14) / 12))) / 4)
+      + Math.floor((367 * (m - 2 - 12 * Math.floor((m - 14) / 12))) / 12)
+      - Math.floor((3 * Math.floor((y + 4900 + Math.floor((m - 14) / 12)) / 100)) / 4)
+      + d - 32075;
+  }
+
+  function ethiopianToJDN(y, m, d) {
+    return Math.floor(1723856 + 365 * (y - 1) + Math.floor(y / 4) + 30 * (m - 1) + d - 1);
+  }
+
+  function jdnToEthiopian(jdn) {
+    const r = (jdn - 1723856) % 1461;
+    const n = r % 365 + 365 * Math.floor(r / 1460);
+    const y = Math.floor((jdn - 1723856) / 1461) * 4 + Math.floor(r / 365) - Math.floor(r / 1460);
+    const m = Math.floor(n / 30) + 1;
+    const d = n % 30 + 1;
+    return { year: y, month: m, day: d };
+  }
+
+  function jdnToGregorian(jdn) {
+    let l = jdn + 68569, n = Math.floor((4 * l) / 146097);
+    l = l - Math.floor((146097 * n + 3) / 4);
+    let i = Math.floor((4000 * (l + 1)) / 1461001);
+    l = l - Math.floor((1461 * i) / 4) + 31;
+    let j = Math.floor((80 * l) / 2447);
+    const d = l - Math.floor((2447 * j) / 80);
+    l = Math.floor(j / 11);
+    const m = j + 2 - 12 * l;
+    const y = 100 * (n - 49) + i + l;
+    return { year: y, month: m, day: d };
+  }
+
+  function toEthiopian(gy, gm, gd) {
+    return jdnToEthiopian(gregorianToJDN(gy, gm, gd));
+  }
+
+  function toGregorianJS(ey, em, ed) {
+    return jdnToGregorian(ethiopianToJDN(ey, em, ed));
+  }
+
+  function formatEth(y, m, d) {
+    return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+
+  function buildPicker(inputEl, pickerContainer) {
+    let current;
+    const val = inputEl.value;
+    if (val && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+      const [y, m, d] = val.split('-').map(Number);
+      current = { year: y, month: m, day: d };
+    } else {
+      const t = new Date();
+      current = toEthiopian(t.getFullYear(), t.getMonth() + 1, t.getDate());
+    }
+
+    function render() {
+      pickerContainer.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <button type="button" class="eth-prev"
+            style="background:none;border:none;cursor:pointer;font-size:18px;">&#8249;</button>
+          <div>
+            <select class="eth-month-sel"
+              style="border:1px solid #ddd;border-radius:4px;padding:2px 4px;">
+              ${ETH_MONTHS.map((mn, i) =>
+                `<option value="${i+1}" ${i+1 === current.month ? 'selected' : ''}>${mn}</option>`
+              ).join('')}
+            </select>
+            <input class="eth-year-inp" type="number" value="${current.year}"
+              style="width:60px;border:1px solid #ddd;border-radius:4px;
+                     padding:2px 4px;margin-left:4px;">
+          </div>
+          <button type="button" class="eth-next"
+            style="background:none;border:none;cursor:pointer;font-size:18px;">&#8250;</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;">
+          ${['Su','Mo','Tu','We','Th','Fr','Sa'].map(d =>
+            `<div style="font-weight:bold;font-size:11px;padding:4px 0;color:#888;">${d}</div>`
+          ).join('')}
+          ${buildDays()}
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <button type="button" class="eth-today"
+            style="font-size:12px;background:none;border:1px solid #ccc;
+                   border-radius:4px;padding:2px 8px;cursor:pointer;">
+            {% trans "Today" %}
+          </button>
+          <button type="button" class="eth-close"
+            style="font-size:12px;background:none;border:1px solid #ccc;
+                   border-radius:4px;padding:2px 8px;cursor:pointer;">
+            {% trans "Close" %}
+          </button>
+        </div>
+      `;
+      bindEvents();
+    }
+
+    function buildDays() {
+      const daysInMonth = current.month <= 12 ? 30 : 5;
+      const greg = toGregorianJS(current.year, current.month, 1);
+      const dow = new Date(greg.year, greg.month - 1, greg.day).getDay();
+      const today = toEthiopian(
+        new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()
+      );
+      let html = '';
+      for (let i = 0; i < dow; i++) html += '<div></div>';
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isToday = d === today.day && current.month === today.month && current.year === today.year;
+        const selected = d === current.day;
+        html += `<button type="button" data-day="${d}"
+          style="padding:4px;border-radius:4px;border:none;cursor:pointer;
+            background:${selected ? '#2563eb' : isToday ? '#dbeafe' : 'none'};
+            color:${selected ? 'white' : 'inherit'};
+            font-weight:${isToday ? 'bold' : 'normal'};">
+          ${d}
+        </button>`;
+      }
+      return html;
+    }
+
+    function bindEvents() {
+      pickerContainer.querySelector('.eth-prev').onclick = (e) => {
+        e.stopPropagation();
+        current.month--;
+        if (current.month < 1) { current.month = 13; current.year--; }
+        render();
+      };
+      pickerContainer.querySelector('.eth-next').onclick = (e) => {
+        e.stopPropagation();
+        current.month++;
+        if (current.month > 13) { current.month = 1; current.year++; }
+        render();
+      };
+      pickerContainer.querySelector('.eth-month-sel').onchange = e => {
+        current.month = parseInt(e.target.value); render();
+      };
+      pickerContainer.querySelector('.eth-year-inp').onchange = e => {
+        current.year = parseInt(e.target.value); render();
+      };
+      pickerContainer.querySelector('.eth-today').onclick = (e) => {
+        e.stopPropagation();
+        const t = new Date();
+        current = toEthiopian(t.getFullYear(), t.getMonth() + 1, t.getDate());
+        inputEl.value = formatEth(current.year, current.month, current.day);
+        pickerContainer.style.display = 'none';
+      };
+      pickerContainer.querySelector('.eth-close').onclick = (e) => {
+        e.stopPropagation();
+        pickerContainer.style.display = 'none';
+      };
+      pickerContainer.querySelectorAll('[data-day]').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          current.day = parseInt(btn.dataset.day);
+          inputEl.value = formatEth(current.year, current.month, current.day);
+          pickerContainer.style.display = 'none';
+        };
+      });
+    }
+
+    render();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-eth-target]').forEach(btn => {
+      const inputId         = btn.getAttribute('data-eth-target');
+      const input           = document.getElementById(inputId);
+      const pickerContainer = document.getElementById('picker_' + inputId);
+      if (!input || !pickerContainer) return;
+
+      input.readOnly     = true;
+      input.style.cursor = 'default';
+      input.placeholder  = 'YYYY-MM-DD';
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('[id^="picker_"]').forEach(p => {
+          if (p !== pickerContainer) p.style.display = 'none';
+        });
+        if (pickerContainer.style.display === 'block') {
+          pickerContainer.style.display = 'none';
+        } else {
+          buildPicker(input, pickerContainer);
+          pickerContainer.style.display = 'block';
+        }
+      });
+    });
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('[id^="picker_"]').forEach(p => {
+        p.style.display = 'none';
+      });
+    });
+  });
+</script>
+{% endblock body_end %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}
+    Annual Plan
+{% endblock title %}
+{% block content %}
+    <div x-data="{showEdit: false}">
+        <div class="flex justify-between">
+          <h2 class="text-lg font-bold">Annual Plan Report For {{ selected_year }}</h2>
+          <form method="get">
+            <div class="flex items-center gap-4">
+              <select name="year" class="select select-bordered">
+                {% for year in years %}
+                  <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+              </select>
+              <input type="submit" class="btn btn-primary" value="Filter">
+            </div>
+          </form>
+        </div>
+        
+        <div class="mt-10 overflow-x-auto">
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right">
+                    <thead class="text-xs text-black uppercase bg-gray-100 text-gray-500">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 border" rowspan="3">{% trans "Task" %}</th>
+                            <th scope="col" class="px-6 py-4 border" rowspan="3">{% trans "Unit" %}</th>
+                            <th scope="col" class="px-6 py-4 border" rowspan="3">{% trans "Annual Plan" %}</th>
+                            <th scope="col" class="px-6 py-4 border" colspan="9">{% trans "Quarter One" %}</th>
+                            <th scope="col" class="px-6 py-4 border" colspan="9">{% trans "Quarter Two" %}</th>
+                            <th scope="col" class="px-6 py-4 border" colspan="9">{% trans "Quarter Three" %}</th>
+                            <th scope="col" class="px-6 py-4 border" colspan="9">{% trans "Quarter Four" %}</th>
+                        </tr>
+                        
+                        <tr>
+                            {% for month in months %}
+                                <th scope="col" colspan="3" class="px-6 py-4 border">{{ month }}</th>
+                            {% endfor %}
+                        </tr>
+
+                        <tr>
+                            {% for month in months %}
+                                <th scope="col" class="px-6 py-4 border">{% trans "Plan" %}</th>
+                                <th scope="col" class="px-6 py-4 border">{% trans "Achievement" %}</th>
+                                <th scope="col" class="px-6 py-4 border">%</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-900">
+                        {% for task, task_value in report_data.items %}
+                            <tr>
+                                <td class="px-6 py-4 border">{{ task.name }}</td>
+                                <td class="px-6 py-4 border">{{ task.annual_resource_type.achievment_unit }}</td>
+                                <td class="px-6 py-4 border">{{ task_value.annual_sum }}</td>
+                                {% for month, month_value in task_value.months.items %}
+                                    <td class="px-6 py-4 border">{{ month_value.planned }}</td>
+                                    <td class="px-6 py-4 border">{{ month_value.value }}</td>
+                                    <td class="px-6 py-4 border">{{ month_value.planned|get_percentage:month_value.value }}</td>
+                                {% endfor %}
+                                <td class="px-6 py-4 border">{{ task_value.actual_sum }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

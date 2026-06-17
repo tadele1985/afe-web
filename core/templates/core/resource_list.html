@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% block title %}
+    {{ page }}
+{% endblock title %}
+{% block content %}
+    <div x-data="{showCreate: false, showEdit: false}">
+        <div class="flex justify-between mb-5">
+            <h2 class="text-lg font-bold">{{ page }}</h2>
+            <button class="btn btn-neutral" @click="showCreate = true">{% trans "Add a" %} {{ title }}</button>
+
+        </div>
+        <form method="get" class="flex items-center space-x-2">
+            <div class="flex items-center">
+                <label for="name" class="sr-only">Name: </label>
+                <input 
+                    type="text" 
+                    name="name" 
+                    id="name" 
+                    class="input input-bordered w-full max-w-xs" 
+                    placeholder="Enter name" 
+                    value="{{ request.GET.name }}"
+                />
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+        <div>{% render_table table %}</div>
+        {% #sidebar open="showCreate" method="post" raw_action=action %}
+        {% csrf_token %}
+        <h1 class="font-bold text-lg">{% trans "Create" %} {{ title }}</h1>
+        {{ form }}
+        {% /sidebar %}
+        {% #sidebar open="showEdit" override_whole=True override_whole_id="editResource" %}
+        {% /sidebar %}
+    </div>
+{% endblock %}

@@ -1,0 +1,427 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="customLightForest">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FEMIS Login</title>
+
+    <link href="{% static 'css/afe-ui.css' %}" rel="stylesheet">
+
+    <style>
+        /* Your existing CSS */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7fb;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, #1d4d45, #2f7b6c);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -150px;
+            left: -150px;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            bottom: -120px;
+            right: -120px;
+        }
+
+        .logo-container {
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        .logo-container img {
+            width: 220px;
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .system-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .system-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .right-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f7f9fc;
+            position: relative;
+        }
+
+        .login-card {
+            width: 420px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1d3557;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 22px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d1d5db;
+            border-radius: 14px;
+            padding: 14px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+        }
+
+        .input-wrapper svg {
+            width: 20px;
+            height: 20px;
+            color: #6b7280;
+            margin-right: 10px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            background: transparent;
+        }
+
+        .input-wrapper input:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none;
+            padding: 15px;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37,99,235,0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer-text {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        @media(max-width: 900px){
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                display: none;
+            }
+
+            .login-card {
+                width: 90%;
+            }
+        }
+
+        /* Error message styles */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #dc2626;
+        }
+
+        .border-red-500 {
+            border-color: #ef4444 !important;
+        }
+
+        .ring-2 {
+            box-shadow: 0 0 0 2px;
+        }
+
+        .ring-red-200 {
+            --tw-ring-color: #fecaca;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-red-500 {
+            color: #ef4444;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NON FIELD ERRORS -->
+    {% if form.non_field_errors %}
+        <div class="toast">
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-error shadow-lg">
+                    <span>{{ error }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="main-container">
+        <!-- LEFT PANEL -->
+        <div class="left-panel">
+            <div class="logo-container">
+                <img src="{% static 'images/logo-without-bg.png' %}" alt="Logo">
+                <div class="system-title">FEMIS</div>
+                <div class="system-subtitle">
+                    Forest Enterprise Management Information System
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+            <form method="post" class="login-card" novalidate>
+                {% csrf_token %}
+
+                <div class="login-title">Welcome Back</div>
+                <div class="login-subtitle">Login to continue to your dashboard</div>
+
+                {% for field in form.hidden_fields %}
+                    {{ field }}
+                {% endfor %}
+
+                <!-- FORM FIELDS -->
+                {% for field in form.visible_fields %}
+                    <!-- FIELD ERRORS -->
+                    {% if field.errors %}
+                        <div class="text-sm text-red-500 mb-2">
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- USERNAME -->
+                    {% if field.name == "username" %}
+                        <div class="input-group">
+                            <label class="input-label" for="id_username">Username</label>
+                            <div class="input-wrapper {% if field.errors %}border-red-500 ring-2 ring-red-200{% endif %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" width="20" height="20">
+                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 1a5 5 0 0 0-4.546 2.916A1 1 0 0 0 4.36 13h7.28a1 1 0 0 0 .906-1.084A5 5 0 0 0 8 9Z"/>
+                                </svg>
+                                <input type="text"
+                                       name="{{ field.name }}"
+                                       id="id_username"
+                                       value="{{ field.value|default:'' }}"
+                                       placeholder="Enter your username"
+                                       autocomplete="username"
+                                       autofocus
+                                       required>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- PASSWORD -->
+                    {% if field.name == "password" %}
+                        <div class="input-group">
+                            <label class="input-label" for="id_password">Password</label>
+                            <div class="input-wrapper {% if field.errors %}border-red-500 ring-2 ring-red-200{% endif %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" width="20" height="20">
+                                    <path d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-2 5V4a2 2 0 1 1 4 0v2H6Z"/>
+                                </svg>
+                                <input type="password"
+                                       name="{{ field.name }}"
+                                       id="id_password"
+                                       placeholder="Enter your password"
+                                       autocomplete="current-password"
+                                       required>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- LOGIN BUTTON -->
+                <button type="submit" class="login-btn" id="loginBtn">
+                    Login
+                </button>
+
+                <div class="footer-text">
+                    © 2026 FEMIS | Secure Login Portal
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Remove the toast message after 5 seconds
+        setTimeout(function() {
+            const toast = document.querySelector('.toast');
+            if (toast) {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(function() {
+                    if (toast && toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 300);
+            }
+        }, 5000);
+
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Prevent multiple form submissions
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('loginBtn');
+            if (submitBtn.disabled) {
+                e.preventDefault();
+                return false;
+            }
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging in...';
+            
+            // Re-enable button after 5 seconds if something goes wrong
+            setTimeout(function() {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Login';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

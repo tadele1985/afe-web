@@ -1,0 +1,12 @@
+{% load i18n %}
+<form class="flex flex-col px-4 h-full"
+      hx-post="{% url "core:edit_actual_activity_resource" pk=id %}"
+      hx-swap="outerHTML"
+>
+  {% csrf_token %}
+  <div class="flex-1 flex flex-col gap-2 h-full">
+    <h1 class="font-bold text-lg">{% trans "Edit Actual Activity Resource" %}</h1>
+    {{ form }}
+  </div>
+  <input type="submit" class="btn btn-neutral" value="{% trans "Submit" %}">
+</form>

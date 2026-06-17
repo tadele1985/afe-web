@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block title %}
+    Stock Balance Report
+{% endblock title %}
+{% block content %}
+    <h1 class="font-bold text-lg">{% trans "Stock Balance Report" %}</h1>
+    <form hx-get
+          hx-trigger="change, keyup delay:100ms"
+          hx-target="#table-container"
+          method="get"
+          class="flex gap-4 mb-10 mt-5">
+        <label for="year" class="input input-bordered flex items-center gap-2">
+            Year
+            <input type="number"
+                   class="grow"
+                   placeholder="2000"
+                   name="year"
+                   id="year"
+                   min="1900"
+                   max="2100"
+                   value="{{ current_year }}" />
+        </label>
+        <select name="location" class="select select-bordered">
+            <option {% if not selected_location %}selected{% endif %} value="">{% trans "Select Location" %}</option>
+            {% for location in locations %}
+                <option value="{{ location.id }}"
+                        {% if selected_location|stringformat:"i" == location.id|stringformat:"i" %}selected{% endif %}>
+                    {{ location.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <style>
+            .choices {
+                width: 300px;
+            }
+        </style>
+        <script>
+          const elements = document.querySelectorAll('select[name="location"]');
+          for (const element of elements) {
+              new Choices(element);
+          }
+        </script>
+        <input type="submit" class="btn btn-neutral" value="Filter">
+    </form>
+    {% block table %}
+        <div id="table-container" class="overflow-x-auto">
+            <table class="table">
+                <thead class="bg-gray-100 text-gray-500">
+                    <tr>
+                        <th scope="col" rowspan="3" class="border">{% trans "Product" %}</th>
+                        <th scope="col" colspan="9" class="border">{% trans "Quarter One" %}</th>
+                        <th scope="col" colspan="9" class="border">{% trans "Quarter Two" %}</th>
+                        <th scope="col" colspan="9" class="border">{% trans "Quarter Three" %}</th>
+                        <th scope="col" colspan="9" class="border">{% trans "Quarter Four" %}</th>
+                        <th scope="col" colspan="9" rowspan="2" class="border">{% trans "Total" %}</th>
+                    </tr>
+                    <tr>
+                        {% for month in months %}<th scope="col" colspan="3">{{ month }}</th>{% endfor %}
+                    </tr>
+                    <tr>
+                        {% for month in months %}
+                            <th scope="col">{% trans "Beginning Balance" %}</th>
+                            <th scope="col">{% trans "Production" %}</th>
+                            <th scope="col">{% trans "Sold" %}</th>
+                        {% endfor %}
+                        <th scope="col">{% trans "Beginning Balance" %}</th>
+                        <th scope="col">{% trans "Production" %}</th>
+                        <th scope="col">{% trans "Sold" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            {% for month in product.month_data %}
+                                <td>{{ month.beginning_balance }}</td>
+                                <td>{{ month.production }}</td>
+                                <td>{{ month.sold }}</td>
+                            {% endfor %}
+                            <td>{{ product.total.beginning_balance }}</td>
+                            <td>{{ product.total.production }}</td>
+                            <td>{{ product.total.sold }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <span class="text-sm">{% trans "Total" %}</span>
+                        </td>
+                        {% for month in total_by_product_by_month %}
+                            <td>{{ month.beginning_balance }}</td>
+                            <td>{{ month.production }}</td>
+                            <td>{{ month.sold }}</td>
+                        {% endfor %}
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endblock table %}
+{% endblock content %}

@@ -1,0 +1,40 @@
+{% load i18n %}
+<div x-data="{createActivity: false}">
+  <button class="btn btn-link" @click="createActivity = true">{% trans "Add Activity" %}</button>
+  <button hx-get="{% url "core:edit_operation_plan" pk=id %}"
+          hx-target="#editOperationPlan"
+          hx-swap="innerHTML"
+          class="btn btn-link"
+          @click="editOperationPlan = true">{% trans "Edit" %}</button>
+  <a href="{% url "core:operation_plan_detail" uuid=id %}"
+     class="btn btn-link">{% trans "View Details" %}</a>
+  {% if plan.stage == "DRAFT" %}
+    <form action="{% url 'core:delete_operation_plan' uuid=plan.id %}"
+          method="POST">
+      {% csrf_token %}
+      <a href="#"
+         onclick="if(confirm('Do you really want to delete this plan?')){this.parentNode.submit()}"
+         class="btn btn-link">{% trans "Delete" %}</a>
+    </form>
+    <form action="{% url 'core:finalize_operation_plan' uuid=plan.id %}"
+          method="POST">
+      {% csrf_token %}
+      <a href="#"
+         onclick="if(confirm('Do you really want to finalize this plan?')){this.parentNode.submit()}"
+         class="btn btn-link">{% trans "Finalize" %}</a>
+    </form>
+  {% endif %}
+  <button hx-get="{% url "core:duplicate_operation_plan" pk=id %}"
+          hx-target="#duplicateOperationPlan"
+          hx-swap="innerHTML"
+          class="btn btn-link"
+          @click="duplicateOperationPlan = true">{% trans "Duplicate" %}</button>
+  {% #sidebar open="createActivity" override_whole=True %}
+  <form hx-post="{% url "core:operation_plan_detail" uuid=id %}"
+        class="form-control h-full"
+        id="createActivityForm">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    {{ form }}
+  </form>
+  {% /sidebar %}
+</div>

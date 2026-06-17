@@ -1,0 +1,9 @@
+{% load i18n %}
+<div
+     x-data="{createCustomer: false}">
+    <button hx-get="{% url "core:customer_update" uuid=id %}"
+            hx-target="#editCustomer"
+            hx-swap="innerHTML"
+            class="btn btn-link"
+            @click="editCustomer = true">{% trans "Edit" %}</button>
+</div>

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+{% block title %}
+    Sold Items
+{% endblock title %}
+{% block content %}
+    {% include "partials/breadcrumb.html" with breadcrumbs=breadcrumbs %}
+    <div x-data="{showEdit: false}">
+        <h2 class="text-lg font-bold">{% trans "Sale Report" %}</h2>
+        {% if filter %}
+            <form method="get" class="mt-5 flex gap-4 items-center">
+                {{ filter.form }}
+                <input type="submit" class="btn btn-neutral" value="Filter">
+                <a href="{% url "core:reports_sale_detail" pk=id %}"
+                   class="btn btn-outline">{% trans "Clear" %}</a>
+            </form>
+        {% endif %}
+        <div>{% render_table table %}</div>
+    </div>
+{% endblock %}

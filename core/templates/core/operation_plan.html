@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% block title %}Operation Plans{% endblock %}
+{% block content %}
+  <style>
+    .choices {
+      width: 205px !important;
+    }
+  </style>
+  <div x-data="{show: false, editOperationPlan: false, duplicateOperationPlan: false}">
+    <div class="flex justify-between">
+      <h2 class="text-lg font-bold">
+        {% trans "Operation plans" %}
+        {% if sector_instance %}- {{ sector_instance.name }}{% endif %}
+      </h2>
+      <div>
+        <button class="btn btn-primary btn-md mr-2" @click="show = true">{% trans "Create a Plan" %}</button>
+      </div>
+    </div>
+    {% if filter %}
+      <form method="get" class="mt-5 flex gap-2 items-center">
+        {{ filter.form }}
+        <input type="submit" class="btn btn-neutral" value='{% trans "Filter" %}'>
+        <a href="{% url "core:home" %}" class="btn btn-outline">{% trans "Clear" %}</a>
+      </form>
+    {% endif %}
+    {% render_table table %}
+    {% #sidebar action="core:home" method="post" open="show" form="opertaion_plan_multi" %}
+    {% csrf_token %}
+    {{ form }}
+    <div id="location_form"></div>
+    {% /sidebar %}
+    {% #sidebar open="editOperationPlan" override_whole=True override_whole_id="editOperationPlan" %}
+    {% /sidebar %}
+    {% #sidebar open="duplicateOperationPlan" override_whole=True override_whole_id="duplicateOperationPlan" %}
+    {% /sidebar %}
+  </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% load custom_filters %}
+{% load i18n %}
+<div x-data="{show: false, viewDetail: false}">
+    <div class="flex justify-between">
+        <h2 class="text-lg font-bold block">
+            {% trans "Form Submission Detail" %}
+        </h2>
+    </div>
+    <h4 class="font-bold block" style="margin-top: 32px;">
+        {% trans "Name" %}: {{ form_submission.name|title }}
+    </h4>
+    <div style="margin-top: 16px;">
+        <div class="grid grid-cols-2 gap-4">
+            {% for key, value in form_submission.data.items %}
+                <div>{{ key|to_title }}</div>
+                <div>{% if key == 'item' %}{{ value|get_item_name }}{% else %}{{ value }}{% endif %}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
