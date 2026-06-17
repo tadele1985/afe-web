@@ -1,10 +1,47 @@
 
 from corsheaders.defaults import default_headers
+import dj_database_url
 from pathlib import Path
+
 import os
 import environ
 from django.forms.renderers import TemplatesSetting
 from django.utils.translation import gettext_lazy as _
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-local-dev-key')
+
+DEBUG = 'RENDER' not in os.environ
+
+# ... rest of your settings
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # ← now BASE_DIR is defined
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-local-dev-key')
+
+DEBUG = 'RENDER' not in os.environ
+
+ALLOWED_HOSTS = []
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← Add this line
+    # ... rest of your middleware
+]
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
+    )
+}
 
 env = environ.Env(DEBUG=(bool, False))
 
