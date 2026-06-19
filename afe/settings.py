@@ -21,11 +21,7 @@ DEBUG = env.bool("DEBUG", default=False)
 DEV = env.bool("DEV", default=False)
 
 # Hosts
-ALLOWED_HOSTS = [
-    "femis.sourcecognize.com",
-    "afe-femis.com",
-    "afe-web.onrender.com",  # ← Add this line
-]
+ALLOWED_HOSTS = ["*"]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -78,6 +74,7 @@ MIDDLEWARE = [
     "core.middleware.LoginRequiredMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
+
 
 if DEV:
     MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
