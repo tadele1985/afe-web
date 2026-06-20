@@ -190,12 +190,15 @@ if DEV:
     CSRF_TRUSTED_ORIGINS = [
         "http://localhost:8000",
         "http://127.0.0.1:8000",
-    ]
+        "https://afe-web-production.up.railway.app",
+]
 else:
     CSRF_TRUSTED_ORIGINS = [
         "https://afe-femis.com",
         "https://femis.sourcecognize.com",
-    ]
+        "https://afe-web-production.up.railway.app",
+]
+
 
 # Forms
 class CustomFormRenderer(TemplatesSetting):
