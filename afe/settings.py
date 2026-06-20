@@ -31,7 +31,7 @@ if DEV:
     ALLOWED_HOSTS += ["*", "localhost", "127.0.0.1", "10.0.2.2", "192.168.0.119"]
 
 # Security (production only)
-DEBUG = False
+DEBUG = True
 if not DEV:
     SECURE_SSL_REDIRECT = False
     SECURE_HSTS_SECONDS = 31536000
