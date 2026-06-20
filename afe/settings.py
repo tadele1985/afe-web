@@ -31,6 +31,7 @@ if DEV:
     ALLOWED_HOSTS += ["*", "localhost", "127.0.0.1", "10.0.2.2", "192.168.0.119"]
 
 # Security (production only)
+DEBUG = False
 if not DEV:
     SECURE_SSL_REDIRECT = False
     SECURE_HSTS_SECONDS = 31536000
@@ -190,7 +191,6 @@ if DEV:
     CSRF_TRUSTED_ORIGINS = [
         "http://localhost:8000",
         "http://127.0.0.1:8000",
-        "https://afe-web-production.up.railway.app",
 ]
 else:
     CSRF_TRUSTED_ORIGINS = [
@@ -198,7 +198,7 @@ else:
         "https://femis.sourcecognize.com",
         "https://afe-web-production.up.railway.app",
 ]
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Forms
 class CustomFormRenderer(TemplatesSetting):
