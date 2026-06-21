@@ -1,6 +1,5 @@
 from corsheaders.defaults import default_headers
 import dj_database_url
-from decouple import config import dj_database_url
 from pathlib import Path
 import os
 import environ
@@ -15,7 +14,7 @@ env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(env_file=BASE_DIR / ".env")
 
 # Secret key
-SECRET_KEY = env.str("-vo#3u05(8qr!m25p1_z7(!u07h0x9k6h@_!t1c7#f6)tt@$zv")
+SECRET_KEY = env.str("SECRET_KEY", default="your-local-dev-key")
 
 # Debug
 DEBUG = env.bool("DEBUG", default=False)
