@@ -22,7 +22,7 @@ DEV = env.bool("DEV", default=False)
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Hosts
-ALLOWED_HOSTS = ['https://afe-femis-rl4h.onrender.com','127.0.0.1']
+ALLOWED_HOSTS = ['https://afe_femis-rl4h.onrender.com','127.0.0.1']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
