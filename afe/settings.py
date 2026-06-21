@@ -1,5 +1,6 @@
 from corsheaders.defaults import default_headers
 import dj_database_url
+from decouple import config import dj_database_url
 from pathlib import Path
 import os
 import environ
@@ -14,14 +15,15 @@ env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(env_file=BASE_DIR / ".env")
 
 # Secret key
-SECRET_KEY = env.str("SECRET_KEY", default="your-local-dev-key")
+SECRET_KEY = env.str("-vo#3u05(8qr!m25p1_z7(!u07h0x9k6h@_!t1c7#f6)tt@$zv")
 
 # Debug
 DEBUG = env.bool("DEBUG", default=False)
 DEV = env.bool("DEV", default=False)
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Hosts
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['https://afe-web1.onrender.com','127.0.0.1']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -107,9 +109,10 @@ WSGI_APPLICATION = "afe.wsgi.application"
 # Database
 if os.environ.get('DATABASE_URL'):
    DATABASES = {
-    "default": dj_database_url.config(
-        default="sqlite:///db.sqlite3",
-        conn_max_age=600
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True,
     )
 }
 else:
@@ -196,7 +199,7 @@ else:
     CSRF_TRUSTED_ORIGINS = [
         "https://afe-femis.com",
         "https://femis.sourcecognize.com",
-        "https://afe-web-production.up.railway.app",
+        "https://afe-web1.onrender.com",
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
