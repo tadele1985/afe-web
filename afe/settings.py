@@ -24,7 +24,7 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if DEV:
     ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "10.0.2.2", "192.168.0.119"]
 else:
-    ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["afe-femis-rl4h.onrender.com"])
+    ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["afefemis-rl4h.onrender.com"])
     if RENDER_EXTERNAL_HOSTNAME:
         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
@@ -99,7 +99,7 @@ TEMPLATES = [
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
-WSGI_APPLICATION = "afefemis.wsgi.application"
+WSGI_APPLICATION = "afe.wsgi.application"
 
 # Database
 if os.environ.get('DATABASE_URL'):
@@ -194,7 +194,7 @@ else:
     CSRF_TRUSTED_ORIGINS = [
         "https://afe-femis.com",
         "https://femis.sourcecognize.com",
-        "https://afefemis-rl4h.onrender.com",
+        "https://afefemis.onrender.com",
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
