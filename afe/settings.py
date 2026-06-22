@@ -199,4 +199,4 @@ class CustomFormRenderer(TemplatesSetting):
 FORM_RENDERER = "afe.settings.CustomFormRenderer"
 
 JAZZMIN_SETTINGS = {"language_chooser": True}
-DEFAULT_CHARSET = "utf-8"/...,,    x     mmbbkmg,,lv,lv,/,  
+DEFAULT_CHARSET = "utf-8"
