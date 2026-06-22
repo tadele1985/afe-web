@@ -1,2 +1,2 @@
-web: gunicorn hrms.wsgi:application
+web: gunicorn afe.wsgi:application
 release: python manage.py migrate
