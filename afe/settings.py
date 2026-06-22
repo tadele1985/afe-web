@@ -9,20 +9,9 @@ from django.utils.translation import gettext_lazy as _
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Environment
-env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env(env_file=BASE_DIR / ".env")
-
-# Secret key
-SECRET_KEY = env.str("SECRET_KEY", default="your-local-dev-key")
-
-# Debug
-DEBUG = env.bool("DEBUG", default=False)
-DEV = env.bool("DEV", default=False)
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
-# Hosts
-ALLOWED_HOSTS = config(("ALLOWED_HOSTS", default="*", cast=Csv())
+SECRET_KEY = config("SECRET_KEY", default="dev-insecure-key-change-me")
+DEBUG = config("DEBUG", default=False, cast=bool)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*", cast=Csv())
 CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
