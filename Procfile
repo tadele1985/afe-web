@@ -1,1 +1,2 @@
-web: gunicorn afe.wsgi:application --bind 0.0.0.0:$PORT
+web: gunicorn hrms.wsgi:application
+release: python manage.py migrate
