@@ -99,7 +99,7 @@ TEMPLATES = [
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
-WSGI_APPLICATION = "afe.wsgi.application"
+WSGI_APPLICATION = "afefemis.wsgi.application"
 
 # Database
 if os.environ.get('DATABASE_URL'):
@@ -194,7 +194,7 @@ else:
     CSRF_TRUSTED_ORIGINS = [
         "https://afe-femis.com",
         "https://femis.sourcecognize.com",
-        "https://afe-femis-rl4h.onrender.com",
+        "https://afefemis-rl4h.onrender.com",
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
