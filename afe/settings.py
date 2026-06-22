@@ -11,32 +11,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False),
+    DEV=(bool, False),
 )
 environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("SECRET_KEY", default="dev-insecure-key-change-me")
 DEBUG = env("DEBUG")
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
-
-DATABASES = {
-    "default": dj_database_url.config(
-        default=env("DATABASE_URL"),
-        conn_max_age=600,
-    )
-}
+DEV = env("DEV")
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 if DEV:
-    ALLOWED_HOSTS += ["*", "localhost", "127.0.0.1", "10.0.2.2", "192.168.0.119"]
-    DEBUG = env("DEBUG")
-    DEV = env.bool("DEV", default=False)  # add this line
+    ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "10.0.2.2", "192.168.0.119"]
+else:
+    ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["afe-femis-rl4h.onrender.com"])
+    if RENDER_EXTERNAL_HOSTNAME:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Security (production only)
-DEBUG = True
 if not DEV:
     SECURE_SSL_REDIRECT = False
     SECURE_HSTS_SECONDS = 31536000
