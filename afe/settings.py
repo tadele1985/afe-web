@@ -24,7 +24,7 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if DEV:
     ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "10.0.2.2", "192.168.0.119"]
 else:
-    ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["afefemis-rl4h.onrender.com"])
+    ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["afefemis.onrender.com"])
     if RENDER_EXTERNAL_HOSTNAME:
         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
