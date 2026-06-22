@@ -32,6 +32,8 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 if DEV:
     ALLOWED_HOSTS += ["*", "localhost", "127.0.0.1", "10.0.2.2", "192.168.0.119"]
+    DEBUG = env("DEBUG")
+    DEV = env.bool("DEV", default=False)  # add this line
 
 # Security (production only)
 DEBUG = True
