@@ -22,7 +22,8 @@ DEV = env.bool("DEV", default=False)
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Hosts
-ALLOWED_HOSTS = ['https://afe-femis.onrender.com','127.0.0.1']
+ALLOWED_HOSTS = config(("ALLOWED_HOSTS", default="*", cast=Csv())
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
