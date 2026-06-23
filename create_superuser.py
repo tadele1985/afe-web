@@ -9,45 +9,105 @@ from core.models import Role, UserRole, RoleCode
 
 User = get_user_model()
 
-username = "femis_admin"
-password = "Admin@1234"
-email = "admin@femis.com"
+print("=== Starting user setup ===")
 
-print("=== Starting superuser setup ===")
-print(f"Total users in DB: {User.objects.count()}")
+users_to_create = [
+    {
+        "username": "femis_admin",
+        "password": "Admin@1234",
+        "email": "admin@femis.com",
+        "role_code": RoleCode.SYSTEM_ADMINISTRATOR,
+        "role_name": "System Administrator",
+        "is_superuser": True,
+        "is_staff": True,
+    },
+    {
+        "username": "data_admin",
+        "password": "Admin@1234",
+        "email": "dataadmin@femis.com",
+        "role_code": RoleCode.DATA_ADMINISTRATOR,
+        "role_name": "Data Administrator",
+        "is_superuser": False,
+        "is_staff": False,
+    },
+    {
+        "username": "branch_user",
+        "password": "Admin@1234",
+        "email": "branchuser@femis.com",
+        "role_code": RoleCode.BRANCH_USER,
+        "role_name": "Branch user",
+        "is_superuser": False,
+        "is_staff": False,
+    },
+    {
+        "username": "data_analyst",
+        "password": "Admin@1234",
+        "email": "dataanalyst@femis.com",
+        "role_code": RoleCode.DATA_ANALYST,
+        "role_name": "Data Analyst",
+        "is_superuser": False,
+        "is_staff": False,
+    },
+    {
+        "username": "branch_data_admin",
+        "password": "Admin@1234",
+        "email": "branchdataadmin@femis.com",
+        "role_code": RoleCode.BRANCH_DATA_ADMINISTRATOR,
+        "role_name": "Branch Data Administrator",
+        "is_superuser": False,
+        "is_staff": False,
+    },
+    {
+        "username": "branch_data_analyst",
+        "password": "Admin@1234",
+        "email": "branchdataanalyst@femis.com",
+        "role_code": RoleCode.BRANCH_DATA_ANALYST,
+        "role_name": "Branch Data Analyst",
+        "is_superuser": False,
+        "is_staff": False,
+    },
+]
 
-try:
-    if not User.objects.filter(username=username).exists():
-        user = User.objects.create_superuser(
-            username=username,
-            email=email,
-            password=password
+for u in users_to_create:
+    try:
+        if not User.objects.filter(username=u["username"]).exists():
+            if u["is_superuser"]:
+                user = User.objects.create_superuser(
+                    username=u["username"],
+                    email=u["email"],
+                    password=u["password"],
+                )
+            else:
+                user = User.objects.create_user(
+                    username=u["username"],
+                    email=u["email"],
+                    password=u["password"],
+                )
+            print(f"✓ Created user: {u['username']}")
+        else:
+            user = User.objects.get(username=u["username"])
+            user.set_password(u["password"])
+            user.is_superuser = u["is_superuser"]
+            user.is_staff = u["is_staff"]
+            user.is_active = True
+            user.save()
+            print(f"✓ Updated user: {u['username']}")
+
+        # Create role if not exists
+        role, _ = Role.objects.get_or_create(
+            code=u["role_code"],
+            defaults={"name": u["role_name"]}
         )
-        print(f"✓ Superuser created: {user.username}")
-    else:
-        user = User.objects.get(username=username)
-        user.set_password(password)
-        user.is_superuser = True
-        user.is_staff = True
-        user.is_active = True
-        user.save()
-        print(f"✓ Superuser updated: {user.username}")
 
-    # Assign System Administrator role
-    role, created = Role.objects.get_or_create(
-        code=RoleCode.SYSTEM_ADMINISTRATOR,
-        defaults={"name": "System Administrator"}
-    )
-    print(f"✓ Role: {role.name} ({'created' if created else 'exists'})")
+        # Assign role to user
+        UserRole.objects.get_or_create(
+            user=user,
+            defaults={"role": role}
+        )
+        print(f"  → Role assigned: {u['role_name']}")
 
-    user_role, created = UserRole.objects.get_or_create(
-        user=user,
-        defaults={"role": role}
-    )
-    print(f"✓ UserRole: {'created' if created else 'already exists'}")
-    print("=== Setup complete ===")
+    except Exception as e:
+        print(f"✗ Error creating {u['username']}: {e}")
 
-except Exception as e:
-    print(f"✗ ERROR: {e}")
-    import traceback
-    traceback.print_exc()
+print(f"\nTotal users in DB: {User.objects.count()}")
+print("=== Setup complete ===")
