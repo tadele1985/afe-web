@@ -557,14 +557,20 @@ def to_ethiopian(gregorian_date):
     """Convert a Gregorian date to Ethiopian calendar."""
     if isinstance(gregorian_date, str):
         gregorian_date = datetime.strptime(gregorian_date, "%Y-%m-%d")
-    
+
     eth = EthiopianDateConverter.to_ethiopian(
         gregorian_date.year,
         gregorian_date.month,
         gregorian_date.day
     )
-    # Returns (year, month, day) tuple
-    return f"{eth[0]}-{eth[1]:02d}-{eth[2]:02d}"
+
+    # Handle both tuple and date object return types
+    if hasattr(eth, 'year'):
+        # Newer versions return a date object
+        return f"{eth.year}-{eth.month:02d}-{eth.day:02d}"
+    else:
+        # Older versions return a tuple
+        return f"{eth[0]}-{eth[1]:02d}-{eth[2]:02d}"
 
 def to_gregorian(ethiopian_date_str):
     """Convert an Ethiopian calendar date string to Gregorian."""
