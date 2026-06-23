@@ -557,15 +557,13 @@ def to_ethiopian(gregorian_date):
     """Convert a Gregorian date to Ethiopian calendar."""
     if isinstance(gregorian_date, str):
         gregorian_date = datetime.strptime(gregorian_date, "%Y-%m-%d")
-
+    
     eth = EthiopianDateConverter.to_ethiopian(
         gregorian_date.year,
         gregorian_date.month,
         gregorian_date.day
     )
-
-    if hasattr(eth, 'year'):
-        return f"{eth.year}-{eth.month:02d}-{eth.day:02d}"
+    # Returns (year, month, day) tuple
     return f"{eth[0]}-{eth[1]:02d}-{eth[2]:02d}"
 
 def to_gregorian(ethiopian_date_str):
@@ -577,9 +575,8 @@ def to_gregorian(ethiopian_date_str):
 def get_ethiopian_today():
     today = datetime.now()
     eth = EthiopianDateConverter.to_ethiopian(today.year, today.month, today.day)
-    if hasattr(eth, 'year'):
-        return f"{eth.year}-{eth.month:02d}-{eth.day:02d}"
     return f"{eth[0]}-{eth[1]:02d}-{eth[2]:02d}"
+
 
 @login_required
 def dashboard(request: HttpRequest):
