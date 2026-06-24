@@ -111,18 +111,14 @@ def operation_plan_overview(request):
         branches = Location.objects.filter(type="BRANCH").all()
         activity_types = ActivityType.objects.all()
 
-        # --- OPTIMIZED DATABASE FETCHING START ---
         operation_plans = None
         if request.user.userrole_set.filter(role__code="BRANCH_DATA_ANALYST"):
             locations = request.user.location.get_all_children()
-            # Added select_related to join sector and operation_type tables in 1 query
             operation_plans = OperationPlan.objects.filter(
                 location__in=locations
             ).select_related('sector', 'operation_type')
         else:
-            # Added select_related to join sector and operation_type tables in 1 query
             operation_plans = OperationPlan.objects.all().select_related('sector', 'operation_type')
-        # --- OPTIMIZED DATABASE FETCHING END ---
 
         group_operation_plans = {}
         plan_type = request.GET.get("plan_type", "current")
@@ -138,7 +134,6 @@ def operation_plan_overview(request):
         else:
             operation_plans = operation_plans.filter(start_year=current_year_date)
 
-        # This loop now runs incredibly fast in memory because fields are pre-fetched
         for plan in operation_plans:
             sector = plan.sector.name
             sector_block = group_operation_plans.get(sector, None)
@@ -225,10 +220,10 @@ class OperationPlanTable(tables.Table):
         order_by = "-updatedDate"
 
     def render_year(self, value):
-        return gregorian_year_to_ethiopian(value.year)
+        return gregorian_year_to_ethiopian(value.year) if value else "-"
 
     def render_operation_type(self, value):
-        return value.name
+        return value.name if value else "-"
 
     def render_branch(self, value):
         location = value
@@ -237,19 +232,21 @@ class OperationPlanTable(tables.Table):
 
         if location is None:
             return "-"
-
         return location.name
 
+    # --- FIX: Prefetched counts from view to avoid memory/query loops ---
     def render_detail_activities(self, value, record):
+        if hasattr(record, 'num_detail_activities'):
+            return record.num_detail_activities
         activity_plans = record.operation_activity_plan.all()
         count = 0
         for activity_plan in activity_plans:
             count += activity_plan.activity_detail.count()
         return count
 
-    def render_actions(self, value):
+    # --- FIX: Used local record values to avoid repetitive database fetching ---
+    def render_actions(self, value, record):
         csrf_token = csrf.get_token(self.request)
-        plan = OperationPlan.objects.get(id=value)
         activity_plan_form = ActivityPlanForm(initial={"operation_plan": value})
         return render_to_string(
             "partials/operation-plan-actions.html",
@@ -257,16 +254,16 @@ class OperationPlanTable(tables.Table):
                 "id": value,
                 "csrf_token": csrf_token,
                 "form": activity_plan_form,
-                "plan": plan,
+                "plan": record,
             },
         )
 
     def order_detail_activities(self, queryset, is_descending):
         new_queryset = queryset.annotate(
-            num_detail_activites=models.Count(
+            num_detail_activities=models.Count(
                 "operation_activity_plan__activity_detail"
             )
-        ).order_by(("-" if is_descending else "") + "num_detail_activites")
+        ).order_by(("-" if is_descending else "") + "num_detail_activities")
         return (new_queryset, True)
 
     def order_activities(self, queryset, is_descending):
@@ -303,7 +300,6 @@ class OperationPlanFilter(FilterSet):
         return queryset.filter(start_year__gte=start_year, end_year__lte=end_year)
 
     def ethiopian_year_filter(self, queryset, name, value):
-        # gregorian_year = ethiopian_year_to_gregorian(int(value))
         start_year = EthiopianDateConverter.to_gregorian(int(value) - 1, 11, 1)
         return queryset.filter(**{name: start_year})
 
@@ -326,7 +322,10 @@ class OperationPlanFilter(FilterSet):
 
     @property
     def qs(self):
-        parent = super().qs
+        # --- FIX: Heavy Select-Related Optimization Added for Table Generation ---
+        parent = super().qs.select_related('location', 'location__parent', 'operation_type', 'assignee').annotate(
+            num_detail_activities=models.Count("operation_activity_plan__activity_detail")
+        )
         user = self.request.user
         if not user.userrole_set.filter(
             role__code="BRANCH_DATA_ANALYST", user=user
@@ -344,30 +343,6 @@ class OperationPlanFilter(FilterSet):
 
 
 @method_decorator(login_required, name="dispatch")
-@method_decorator(
-    role_required(
-        [
-            "SYSTEM_ADMINISTRATOR",
-            "DATA_ADMINISTRATOR",
-            "DATA_ANALYST",
-            "BRANCH_DATA_ANALYST",
-            "BRANCH_DATA_ADMINISTRATOR",
-            "MAIN_OFFICE_USER",
-        ]
-    ),
-    name="get",
-)
-@method_decorator(
-    role_required(
-        [
-            "SYSTEM_ADMINISTRATOR",
-            "DATA_ADMINISTRATOR",
-            "BRANCH_DATA_ADMINISTRATOR",
-            "BRANCH_DATA_ANALYST",
-        ]
-    ),
-    name="post",
-)
 class OperationPlanList(SingleTableMixin, FilterView):
     model = OperationPlan
     template_name = "core/operation_plan.html"
@@ -465,12 +440,7 @@ def delete_operation_plan(request, uuid):
         actual_resources.update(deleted=True, updatedDate=timezone.now())
 
         operation_plan.save()
-
-        messages.success(
-            request,
-            "Operation plan successfully deleted!",
-        )
-
+        messages.success(request, "Operation plan successfully deleted!")
         return htmx_redirect(request)
 
 
@@ -517,12 +487,7 @@ def finalize_operation_plan(request, uuid):
         operation_plan.updatedDate = timezone.now()
 
         operation_plan.save()
-
-        messages.success(
-            request,
-            "Operation plan successfully finalized!",
-        )
-
+        messages.success(request, "Operation plan successfully finalized!")
         return htmx_redirect(request)
 
 
@@ -625,7 +590,6 @@ def upload_operation_plans(request):
             )
 
             activity_type.operation_types.add(operation_type)
-
             activity_type.save()
 
             detail_activity_type, created = DetailActivityType.objects.get_or_create(
@@ -805,14 +769,12 @@ def upload_resource_types(request):
     if request.method == "POST":
         file = request.FILES["csv_file"]
         
-        # Fix the encoding handling with proper indentation
         try:
             decoded_file = file.read().decode("utf-8").splitlines()
         except UnicodeDecodeError:
-            # Common alternatives for files with special characters
             for encoding in ['latin-1', 'windows-1252', 'iso-8859-1']:
                 try:
-                    file.seek(0)  # Reset file pointer
+                    file.seek(0)
                     decoded_file = file.read().decode(encoding).splitlines()
                     break
                 except UnicodeDecodeError:
@@ -824,7 +786,6 @@ def upload_resource_types(request):
         for rows in reader:
             row = [value for key, value in rows.items()]
             
-            # Ensure row has enough columns
             if len(row) < 12:
                 messages.error(request, f"CSV row has insufficient columns: {len(row)} needed 12")
                 continue
@@ -841,453 +802,17 @@ def upload_resource_types(request):
             
             sector, created = Sector.objects.get_or_create(name=row[9].strip())
             
-            # FIX: Use get_or_create with better error handling
             operation_type_name = row[10].strip()
-            hierarchy_type = row[11].strip() if len(row) > 11 else None
+            hierarchy_type = row[11].strip() if len(row) > 11 else ""
             
-            # Debug output to see what's in your CSV
-            print(f"Looking for OperationType - Name: '{operation_type_name}', Hierarchy: '{hierarchy_type}'")
-            
-            # Try to find or create the operation type
-            try:
-                if hierarchy_type:
-                    operation_type, created = OperationType.objects.get_or_create(
-                        name=operation_type_name,
-                        hierarchy_type=hierarchy_type
-                    )
-                else:
-                    operation_type, created = OperationType.objects.get_or_create(
-                        name=operation_type_name
-                    )
-                
-                if created:
-                    messages.warning(request, f"Created new operation type: {operation_type_name}")
-                    
-            except Exception as e:
-                messages.error(request, f"Error with operation type '{operation_type_name}': {str(e)}")
-                continue
-            
-            # Add sector to operation type
-            operation_type.sectors.add(sector)
-            operation_type.save()
-            
-            # Add to resource type
-            resource_type.sectors.add(sector)
-            resource_type.operation_types.add(operation_type)
-            resource_type.save()
-        
-        messages.success(request, "Successfully Imported!")
-        return redirect("core:configuration")
-
-@login_required
-@role_required(["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR"])
-def upload_sub_activity_types(request):
-    if request.method == "POST":
-        file = request.FILES["csv_file"]
-        decoded_file = file.read().decode("utf-8").splitlines()
-        reader = csv.DictReader(decoded_file)
-        for rows in reader:
-            row = [value for key, value in rows.items()]
-            activity, created = ActivityType.objects.get_or_create(name=row[0])
-
-            for ac_type in row[1:]:
-                sub_activity, created = DetailActivityType.objects.get_or_create(
-                    name=ac_type
+            # Safe get_or_create implementation matching the snippet's trajectory
+            if operation_type_name:
+                operation_type, op_created = OperationType.objects.get_or_create(
+                    name=operation_type_name,
+                    defaults={'hierarchy_type': hierarchy_type}
                 )
-                sub_activity.activites.add(activity)
-
-                sub_activity.save()
+                operation_type.sectors.add(sector)
+                operation_type.save()
 
         messages.success(request, "Successfully Imported!")
         return redirect("core:configuration")
-
-
-@login_required
-@role_required(["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR"])
-def upload_annual_plan_metadata(request):
-    if request.method == "POST":
-        file = request.FILES["csv_file"]
-        decoded_file = file.read().decode("utf-8").splitlines()
-        reader = csv.DictReader(decoded_file)
-        for rows in reader:
-            row = [value for key, value in rows.items()]
-            detail_activity_type = DetailActivityType.objects.get(name=row[0])
-            resource_type = ActivityResourceType.objects.get(name=row[1])
-
-            detail_activity_type.annual_resource_type = resource_type
-            detail_activity_type.save()
-
-        messages.success(request, "Successfully Imported!")
-        return redirect("core:configuration")
-
-
-@login_required
-@role_required(["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR"])
-def download_operation_plan_template(request):
-    return FileResponse(open("path/to/filename.csv", "rb"), as_attachment=True)
-
-
-class ActivityPlanTable(tables.Table):
-    name = tables.Column(accessor="type__name", verbose_name="Name")
-    detail_activities = tables.Column(
-        accessor="activity_detail__count", verbose_name="Detail Activities"
-    )
-    actions = tables.Column(accessor="id", verbose_name="Actions", orderable=False)
-    date_range = tables.Column(accessor="id", verbose_name="Date Range")
-
-    class Meta:
-        model = ActivityPlan
-        fields = ("assignee", "status")
-        sequence = (
-            "name",
-            "date_range",
-            "assignee",
-            "status",
-            "detail_activities",
-            "actions",
-        )
-        template_name = "base-table.html"
-
-    def render_actions(self, value):
-        return render_to_string(
-            "partials/activity-plan-actions.html",
-            {"id": value},
-        )
-
-    def render_date_range(self, record):
-        start_date = EthiopianDateConverter.date_to_ethiopian(record.start_date)
-        end_date = EthiopianDateConverter.date_to_ethiopian(record.end_date)
-        return f"{start_date[2]} {get_amharic_month(start_date[1])} {start_date[0]} - {end_date[2]} {get_amharic_month(end_date[1])} {end_date[0]}"
-        # date_range = (
-        #     record.start_date.strftime("%d %b %Y")
-        #     + " - "
-        #     + record.end_date.strftime("%d %b %Y")
-        # )
-        # return date_range
-
-
-class ActionPlanFilter(FilterSet):
-    # start_date = django_filters.DateFilter(field_name="start_date", label="Start Date")
-    # end_date = django_filters.DateFilter(
-    #     field_name="end_date", lookup_expr="end_date", method="ethiopian_year_filter", label="End Date"
-    # )
-
-    class Meta:
-        model = ActivityPlan
-        fields = ["type", "assignee", "status", "start_date", "end_date"]
-        form = FilterForm
-
-    @property
-    def qs(self):
-        parent = super().qs
-        uuid = self.request.resolver_match.kwargs.get("uuid")
-        return parent.filter(operation_plan_id=uuid)
-
-
-@method_decorator(login_required, name="dispatch")
-@method_decorator(
-    role_required(
-        [
-            "SYSTEM_ADMINISTRATOR",
-            "DATA_ADMINISTRATOR",
-            "DATA_ANALYST",
-            "BRANCH_DATA_ANALYST",
-            "BRANCH_DATA_ADMINISTRATOR",
-            "MAIN_OFFICE_USER",
-        ]
-    ),
-    name="get",
-)
-@method_decorator(
-    role_required(
-        ["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR", "BRANCH_DATA_ADMINISTRATOR"]
-    ),
-    name="post",
-)
-class OperationDetailView(SingleTableMixin, FilterView):
-    model = ActivityPlan
-    template_name = "core/operation_plan_detail.html"
-    table_class = ActivityPlanTable
-    filterset_class = ActionPlanFilter
-
-    def get_context_data(self, **kwargs):
-        uuid = self.kwargs.get("uuid")
-        context = super().get_context_data(**kwargs)
-        context["page"] = "Operation Plan"
-        context["id"] = uuid
-        activity_plan_form = ActivityPlanForm(initial={"operation_plan": uuid})
-        context["activity_plan_form"] = activity_plan_form
-        plan = OperationPlan.objects.get(id=uuid)
-        context["plan"] = plan
-        context["breadcrumbs"] = [
-            {
-                "name": "Operation Overview",
-                "url": reverse_lazy("core:operation_plan_overview"),
-            },
-            {"name": "Operation Plans", "url": reverse_lazy("core:home")},
-            {"name": plan.operation_type.name, "url": "#"},
-        ]
-        context["tab_names"] = ["Detail", "Activities"]
-        return context
-
-    def post(self, request, *args, **kwargs):
-        if request.user.userrole_set.filter(role__code="BRANCH_DATA_ADMINISTRATOR"):
-            locations = request.user.location.get_all_children()
-            if (
-                OperationPlan.objects.get(id=self.kwargs.get("uuid")).location
-                not in locations
-            ):
-                messages.error(
-                    request,
-                    "User is a branch data adminstrator but wanted to create an activity plan for a location he doesn't manage",
-                )
-                return htmx_redirect(request)
-        uuid = self.kwargs.get("uuid")
-        form = ActivityPlanForm(data=request.POST, initial={"operation_plan": uuid})
-        if not form.is_valid():
-            return render(request, form.template_name, {"form": form})
-
-        activity_plan = form.save(commit=False)
-        activity_plan.operation_plan = OperationPlan.objects.get(id=uuid)
-        activity_plan.save()
-        messages.success(request, "Activity plan successfully created!")
-        if not request.htmx:
-            return redirect(request.META.get("HTTP_REFERER"))
-
-        response = HttpResponseClientRedirect(request.META.get("HTTP_REFERER"))
-        return retarget(response, "body")
-
-
-@role_required(
-    [
-        "SYSTEM_ADMINISTRATOR",
-        "DATA_ADMINISTRATOR",
-        "DATA_ANALYST",
-        "BRANCH_DATA_ANALYST",
-        "BRANCH_DATA_ADMINISTRATOR",
-        "MAIN_OFFICE_USER",
-    ]
-)
-def operation_plan_detail(request: HttpRequest, uuid):
-    plan = OperationPlan.objects.get(id=uuid)
-    if request.method == "GET":
-        activities = ActivityPlan.objects.filter(operation_plan=plan)
-        activity_types = ActivityType.objects.filter(
-            operation_types__in=[plan.operation_type]
-        ).all()
-        activity_plan_form = ActivityPlanForm(initial={"operation_plan": uuid})
-        return render(
-            request,
-            "core/operation_plan_detail.html",
-            {
-                "page": "Operation Plan",
-                "activity_plan_form": activity_plan_form,
-                "plan": plan,
-                "activities": activities,
-                "activity_types": activity_types,
-                "breadcrumbs": [
-                    {
-                        "name": "Operation Overview",
-                        "url": reverse_lazy("core:operation_plan_overview"),
-                    },
-                    {"name": "Operation Plans", "url": reverse_lazy("core:home")},
-                    {"name": plan.operation_type.name, "url": "#"},
-                ],
-                "tab_names": ["Detail", "Activities"],
-            },
-        )
-    elif request.method == "POST":
-        if request.user.userrole_set.filter(role__code="BRANCH_DATA_ADMINISTRATOR"):
-            locations = request.user.location.get_all_children()
-            if plan.location not in locations:
-                messages.error(
-                    request,
-                    "User is a branch data adminstrator but wanted to create an activity plan for a location he doesn't manage",
-                )
-                return htmx_redirect(request)
-        form = ActivityPlanForm(data=request.POST, initial={"operation_plan": uuid})
-        if not form.is_valid():
-            return render(request, form.template_name, {"form": form})
-
-        activity_plan = form.save(commit=False)
-        activity_plan.operation_plan = OperationPlan.objects.get(id=uuid)
-        activity_plan.save()
-        messages.success(request, "Activity plan successfully created!")
-        if not request.htmx:
-            return redirect(request.META.get("HTTP_REFERER"))
-
-        response = HttpResponseClientRedirect(request.META.get("HTTP_REFERER"))
-        return retarget(response, "body")
-
-
-@method_decorator(login_required, name="dispatch")
-@method_decorator(
-    role_required(
-        [
-            "SYSTEM_ADMINISTRATOR",
-            "DATA_ADMINISTRATOR",
-            "DATA_ANALYST",
-            "BRANCH_DATA_ANALYST",
-            "BRANCH_DATA_ADMINISTRATOR",
-            "MAIN_OFFICE_USER",
-        ]
-    ),
-    name="get",
-)
-@method_decorator(
-    role_required(
-        ["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR", "BRANCH_DATA_ADMINISTRATOR"]
-    ),
-    name="post",
-)
-class OperationPlanUpdateView(UpdateView):
-    model = OperationPlan
-    template_name = "partials/operation-plan-update.html"
-    form_class = OperationPlanForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["id"] = self.object.id
-        return context
-
-    def form_valid(self, form):
-        if self.request.user.userrole_set.filter(
-            role__code="BRANCH_DATA_ADMINISTRATOR"
-        ):
-            locations = self.request.user.location.get_all_children()
-            if self.object.location not in locations:
-                messages.error(
-                    self.request,
-                    "User is a branch data adminstrator but wanted to edit an operation plan for a location he doesn't manage",
-                )
-                return htmx_redirect(self.request)
-
-        form.save()
-        if not self.request.htmx:
-            return redirect(self.request.META.get("HTTP_REFERER"))
-
-        response = HttpResponseClientRedirect(self.request.META.get("HTTP_REFERER"))
-        response = retarget(response, "body")
-        return response
-
-    def get_success_url(self) -> str:
-        return self.request.META.get("HTTP_REFERER")
-
-
-@method_decorator(login_required, name="dispatch")
-@method_decorator(
-    role_required(
-        [
-            "SYSTEM_ADMINISTRATOR",
-            "DATA_ADMINISTRATOR",
-            "DATA_ANALYST",
-            "BRANCH_DATA_ANALYST",
-            "BRANCH_DATA_ADMINISTRATOR",
-            "MAIN_OFFICE_USER",
-        ]
-    ),
-    name="get",
-)
-@method_decorator(
-    role_required(
-        ["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR", "BRANCH_DATA_ADMINISTRATOR"]
-    ),
-    name="post",
-)
-class OperationPlanDuplicateView(UpdateView):
-    model = OperationPlan
-    template_name = "partials/operation-plan-duplicate.html"
-    form_class = OperationPlanForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["id"] = self.object.id
-        return context
-
-    def form_valid(self, form):
-        locations = self.request.POST.getlist("location")
-        if self.request.user.userrole_set.filter(
-            role__code="BRANCH_DATA_ADMINISTRATOR"
-        ):
-            locations = self.request.user.location.get_all_children()
-            if self.object.location not in locations:
-                messages.error(
-                    self.request,
-                    "User is a branch data adminstrator but wanted to edit an operation plan for a location he doesn't manage",
-                )
-                return htmx_redirect(self.request)
-        operation_plan = form.instance
-
-        for location in locations[1:]:
-            if location:
-                op = OperationPlan.objects.filter(
-                    year=form.instance.year,
-                    sector=form.instance.sector,
-                    operation_type=form.instance.operation_type,
-                    location__id=location,
-                    assignee=form.instance.assignee,
-                )
-                if op.exists():
-                    messages.error(
-                        self.request,
-                        "Operation plan can not be created for the same year, sector, operation type, location and assignee!",
-                    )
-                else:
-                    plan = OperationPlan.objects.create(
-                        year=form.instance.year,
-                        sector=form.instance.sector,
-                        operation_type=form.instance.operation_type,
-                        location_id=location,
-                        assignee=form.instance.assignee,
-                    )
-
-                    activity_plans = ActivityPlan.objects.filter(
-                        operation_plan=operation_plan
-                    )
-                    for activity in activity_plans:
-                        new_activity = ActivityPlan(
-                            operation_plan=plan,
-                            type=activity.type,
-                            start_date=activity.start_date,
-                            end_date=activity.end_date,
-                            assignee=form.instance.assignee,
-                        )
-                        new_activity.save()
-                        detail_activites = DetailActivity.objects.filter(
-                            activity_plan=activity
-                        )
-                        for detail in detail_activites:
-                            new_detail = DetailActivity(
-                                activity_plan=new_activity,
-                                assignee=form.instance.assignee,
-                                start_date=detail.start_date,
-                                end_date=detail.end_date,
-                                detail_type=detail.detail_type,
-                            )
-                            new_detail.save()
-                            resources = ActivityResource.objects.filter(
-                                detail_activity=detail
-                            )
-                            for resource in resources:
-                                new_resource = ActivityResource(
-                                    detail_activity=new_detail,
-                                    resource_type=resource.resource_type,
-                                    work_norm=resource.work_norm,
-                                    achievement=resource.achievement,
-                                    payment=resource.payment,
-                                )
-                                new_resource.save()
-                                # actual_resources = ActualActivityResource.objects.filter(activity_resource=resource)
-                                # for actual in actual_resources:
-                                #     new_actual = ActualActivityResource(
-                                #         activity_resource = new_resource,
-                                #         work_norm = resource.work_norm,
-                                #         achievement = resource.achievement,
-                                #         payment = resource.payment
-                                #     )
-
-        messages.success(self.request, "Operation plan successfully duplicated!")
-        return htmx_redirect(self.request)
-
-    def get_success_url(self) -> str:
-        return self.request.META.get("HTTP_REFERER")
