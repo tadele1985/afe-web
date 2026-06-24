@@ -71,6 +71,7 @@ def operation_plan_overview(request):
             ]
         ).exists():
             return render(request, "permission_denied.html")
+            
         form = OperationPlanForm(data=request.POST)
         if form.is_valid():
             operation_plan = form.save(commit=False)
@@ -82,6 +83,7 @@ def operation_plan_overview(request):
                         "User is a branch data adminstrator but wanted to create an operation plan for a location he doesn't manage",
                     )
                     return htmx_redirect(request)
+                    
             if OperationPlan.objects.filter(
                 year=operation_plan.year,
                 sector=operation_plan.sector,
@@ -91,12 +93,14 @@ def operation_plan_overview(request):
                     request, "Operation plan for this sector and year already exists!"
                 )
                 return redirect(request.META.get("HTTP_REFERER"))
+                
             operation_plan.save()
             messages.success(request, "Operation plan successfully created!")
             return redirect(request.META.get("HTTP_REFERER"))
         else:
             messages.error(request, form.errors)
             return redirect(request.META.get("HTTP_REFERER"))
+            
     else:
         form = OperationPlanForm()
         years = []
@@ -107,14 +111,20 @@ def operation_plan_overview(request):
         branches = Location.objects.filter(type="BRANCH").all()
         activity_types = ActivityType.objects.all()
 
+        # --- OPTIMIZED DATABASE FETCHING START ---
         operation_plans = None
         if request.user.userrole_set.filter(role__code="BRANCH_DATA_ANALYST"):
             locations = request.user.location.get_all_children()
-            operation_plans = OperationPlan.objects.filter(location__in=locations)
+            # Added select_related to join sector and operation_type tables in 1 query
+            operation_plans = OperationPlan.objects.filter(
+                location__in=locations
+            ).select_related('sector', 'operation_type')
         else:
-            operation_plans = OperationPlan.objects.all()
-        group_operation_plans = {}
+            # Added select_related to join sector and operation_type tables in 1 query
+            operation_plans = OperationPlan.objects.all().select_related('sector', 'operation_type')
+        # --- OPTIMIZED DATABASE FETCHING END ---
 
+        group_operation_plans = {}
         plan_type = request.GET.get("plan_type", "current")
 
         current_year_date = EthiopianDateConverter.to_gregorian(
@@ -128,6 +138,7 @@ def operation_plan_overview(request):
         else:
             operation_plans = operation_plans.filter(start_year=current_year_date)
 
+        # This loop now runs incredibly fast in memory because fields are pre-fetched
         for plan in operation_plans:
             sector = plan.sector.name
             sector_block = group_operation_plans.get(sector, None)
@@ -177,7 +188,6 @@ def operation_plan_overview(request):
                 "page": "Operation Plan",
             },
         )
-
 
 class OperationPlanTable(tables.Table):
     activities = tables.Column(
