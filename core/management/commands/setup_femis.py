@@ -5,11 +5,14 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Create roles
         roles = [
-            {"name": "System Administrator", "code": "SYSTEM_ADMINISTRATOR"},
-            {"name": "Data Administrator", "code": "DATA_ADMINISTRATOR"},
-            {"name": "Data Analyst", "code": "DATA_ANALYST"},
-            {"name": "Branch User", "code": "BRANCH_USER"},
-        ]
+    {"name": "System Administrator",      "code": "SYSTEM_ADMINISTRATOR"},
+    {"name": "Data Administrator",        "code": "DATA_ADMINISTRATOR"},
+    {"name": "Data Analyst",              "code": "DATA_ANALYST"},
+    {"name": "Main Office User",          "code": "MAIN_OFFICE_USER"},
+    {"name": "Branch Data Administrator", "code": "BRANCH_DATA_ADMINISTRATOR"},
+    {"name": "Branch Data Analyst",       "code": "BRANCH_DATA_ANALYST"},
+    {"name": "Branch User",               "code": "BRANCH_USER"},
+]
         for r in roles:
             Role.objects.get_or_create(code=r["code"], defaults={"name": r["name"]})
             self.stdout.write(f"✅ Role: {r['code']}")
