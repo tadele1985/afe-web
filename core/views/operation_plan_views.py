@@ -1,10 +1,3 @@
-To make this work flawlessly, we need to merge the missing logic from your function view (operation_plan) directly into the robust class-based view (OperationPlanList).
-
-The reason it was throwing a 500 error is that the URL passes ?sector=...&year=2019, but your Django filter set expects the field name to be year, while your model actually uses start_year under the hood. When django-filters runs implicitly, it gets confused by the raw year query string.
-
-Here is the fully corrected code for your views file. It cleans up the conflict by using OperationPlanList as the primary view, overrides get_queryset() to automatically read sector and year from the URL, and drops the redundant function view.
-
-Python
 import csv
 from core.utils import (
     gregorian_year_to_ethiopian,
