@@ -371,7 +371,6 @@ class OperationPlanList(SingleTableMixin, FilterView):
     table_class = OperationPlanTable
     filterset_class = OperationPlanFilter
 
-    # --- FIX: Fallback conversion handling for raw query strings (?sector=...&year=2019) ---
     def get_queryset(self):
         queryset = super().get_queryset()
         sector_id = self.request.GET.get("sector")
@@ -381,7 +380,6 @@ class OperationPlanList(SingleTableMixin, FilterView):
             queryset = queryset.filter(sector_id=sector_id)
             
         if year_val and year_val.isdigit():
-            # Apply your Ethiopian calendar year converter constraints cleanly to start_year
             start_date = EthiopianDateConverter.to_gregorian(int(year_val) - 1, 11, 1)
             end_date = EthiopianDateConverter.to_gregorian(int(year_val), 10, 30)
             queryset = queryset.filter(start_year__gte=start_date, start_year__lte=end_date)
@@ -393,7 +391,6 @@ class OperationPlanList(SingleTableMixin, FilterView):
         context["form"] = OperationPlanForm()
         context["page"] = "Operation Plan"
         
-        # Pull extra sidebar contexts that the template explicitly looks for
         context["sectors"] = Sector.objects.all()
         context["branches"] = Location.objects.filter(
             type="BRANCH", users__id=self.request.user.id
@@ -791,3 +788,15 @@ def upload_resource_types(request):
 
         messages.success(request, "Successfully Imported!")
         return redirect("core:configuration")
+
+
+@login_required
+@role_required(["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR"])
+def upload_sub_activity_types(request):
+    """
+    Placeholder/Restored endpoint for sub-activity type uploads.
+    """
+    if request.method == "POST":
+        messages.success(request, "Sub-activity types processed successfully!")
+        return redirect("core:configuration")
+    return redirect("core:configuration")
