@@ -1,4 +1,5 @@
-from django.contrib import messages
+Here is the complete fixed configuration_views.py:
+pythonfrom django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect, render
@@ -40,7 +41,6 @@ import django_tables2 as tables
 from ethiopian_date import EthiopianDateConverter
 
 
-
 @login_required
 @role_required(["SYSTEM_ADMINISTRATOR", "DATA_ADMINISTRATOR"])
 def configuration(request):
@@ -57,26 +57,26 @@ class SectorTable(tables.Table):
         template_name = "base-table.html"
 
     def render_createdDate(self, value):
-        """Render created date in Ethiopian calendar"""
         if not value:
             return "-"
-        
-        # Convert Gregorian to Ethiopian calendar
-        converter = EthiopianDateConverter()
-        ethiopian_date = converter.to_ethiopian(value.year, value.month, value.day)
-        year = ethiopian_date[0]
-        month = ethiopian_date[1]
-        day = ethiopian_date[2]
-        months = [
-            "መስከረም", "ጥቅምት", "ህዳር", "ታህሳስ", "ጥር", "የካቲት",
-            "መጋቢት", "ሚያዚያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሃሴ", "ጳጉሜ"
-        ]
-        
-        month_name = months[month - 1] if 1 <= month <= 13 else "Unknown"
-        return f"{month_name} {day}, {year}"
+        try:
+            ethiopian_date = EthiopianDateConverter.to_ethiopian(
+                value.year, value.month, value.day
+            )
+            year, month, day = ethiopian_date
+            months = [
+                "መስከረም", "ጥቅምት", "ህዳር", "ታህሳስ", "ጥር", "የካቲት",
+                "መጋቢት", "ሚያዚያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሃሴ", "ጳጉሜ"
+            ]
+            month_name = months[month - 1] if 1 <= month <= 13 else "Unknown"
+            return f"{month_name} {day}, {year}"
+        except Exception:
+            return str(value)
 
     def render_actions(self, value):
         return render_to_string("partials/sector-table-actions.html", {"id": value})
+
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     role_required(
@@ -96,12 +96,12 @@ class SectorListView(tables.SingleTableView):
         context = super().get_context_data(**kwargs)
         context["page"] = _("Sectors")
         context["form"] = SectorForm()
-        return context    
+        return context
 
     def get_table_data(self):
         name_filter = self.request.GET.get("name", "").strip()
         queryset = Sector.objects.all()
-        
+
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
 
@@ -264,7 +264,6 @@ class ResourcesListView(tables.SingleTableView):
             return HttpResponseBadRequest()
 
         response = super().dispatch(request, *args, **kwargs)
-
         return response
 
     def get_context_data(self, **kwargs):
@@ -289,7 +288,7 @@ class ResourcesListView(tables.SingleTableView):
     def get_table_data(self):
         name_filter = self.request.GET.get("name", "").strip()
         queryset = ActivityResourceType.objects.filter(type=self.resource_type)
-        
+
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
 
@@ -324,7 +323,7 @@ class ResourceCreateView(CreateView):
         if obj:
             messages.error(self.request, _('Resource with that name already exists'))
             return redirect(self.request.META.get("HTTP_REFERER"))
-        
+
         self.object = form.save(commit=False)
         if resource_type not in ["RESOURCE", "TOOL", "INPUT"]:
             return HttpResponseBadRequest()
@@ -465,7 +464,6 @@ class ItemTable(tables.Table):
             "date",
             "item_type",
             "batch",
-          
         ]
         template_name = "base-table.html"
 
@@ -497,7 +495,7 @@ class ItemListView(tables.SingleTableView):
     def get_table_data(self):
         name_filter = self.request.GET.get("name", "").strip()
         queryset = Item.objects.all()
-        
+
         if name_filter:
             queryset = queryset.filter(species__icontains=name_filter)
 
@@ -661,7 +659,7 @@ class OperationTypeListView(tables.SingleTableView):
     def get_table_data(self):
         name_filter = self.request.GET.get("name", "").strip()
         queryset = OperationType.objects.all()
-        
+
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
 
@@ -784,7 +782,7 @@ class ActivityTypeListView(tables.SingleTableView):
     def get_table_data(self):
         name_filter = self.request.GET.get("name", "").strip()
         queryset = ActivityType.objects.all()
-        
+
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
 
@@ -932,7 +930,7 @@ class DetailActivityTypeListView(tables.SingleTableView):
     def get_table_data(self):
         name_filter = self.request.GET.get("name", "").strip()
         queryset = DetailActivityType.objects.all()
-        
+
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
 
@@ -1001,7 +999,7 @@ class LocationUpdateView(UpdateView):
         if obj:
             messages.error(self.request, _('Location with that name already exists'))
             return redirect(self.request.META.get("HTTP_REFERER"))
-        
+
         form.save()
         messages.success(self.request, _("Location updated successfully"))
         if not self.request.htmx:
@@ -1017,31 +1015,27 @@ class LocationUpdateView(UpdateView):
 
 class EthiopianDateColumn(tables.Column):
     """Custom column for Ethiopian calendar dates"""
-    
+
     def render(self, value):
         if not value:
             return "-"
-        
-        converter = EthiopianDateConverter()
-        
-        # Pass as positional arguments: year, month, day
-        ethiopian_date = converter.to_ethiopian(value.year, value.month, value.day)
-        
-        # ethiopian_date is a tuple (year, month, day)
-        year, month, day = ethiopian_date
-        
-        # Ethiopian month names in Amharic
-        months = [
-            "መስከረም", "ጥቅምት", "ህዳር", "ታህሳስ", "ጥር", "የካቲት",
-            "መጋቢት", "ሚያዚያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሃሴ", "ጳጉሜ"
-        ]
-        
-        month_name = months[month - 1] if 1 <= month <= 13 else "Unknown"
-        
-        return f"{month_name} {day}, {year}"
+        try:
+            ethiopian_date = EthiopianDateConverter.to_ethiopian(
+                value.year, value.month, value.day
+            )
+            year, month, day = ethiopian_date
+            months = [
+                "መስከረም", "ጥቅምት", "ህዳር", "ታህሳስ", "ጥር", "የካቲት",
+                "መጋቢት", "ሚያዚያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሃሴ", "ጳጉሜ"
+            ]
+            month_name = months[month - 1] if 1 <= month <= 13 else "Unknown"
+            return f"{month_name} {day}, {year}"
+        except Exception:
+            return str(value)
+
 
 class LocationTable(tables.Table):
-    createdDate = EthiopianDateColumn(verbose_name="Created Date")  # Ethiopian calendar
+    createdDate = EthiopianDateColumn(verbose_name="Created Date")
     actions = tables.Column(accessor="id", verbose_name="Actions", orderable=False)
 
     class Meta:
@@ -1053,6 +1047,7 @@ class LocationTable(tables.Table):
         ]
         attrs = {"class": "table"}
         template_name = "base-table.html"
+
     def render_actions(self, value):
         csrf_token = csrf.get_token(self.request)
         user_form = LocationUpdateForm(initial={"id": value})
@@ -1076,7 +1071,7 @@ class LocationListView(tables.SingleTableView):
     model = Location
     table_class = LocationTable
     template_name = "core/configuration_base_list.html"
-    
+
     def get_queryset(self):
         queryset = super().get_queryset()
         name_param = self.request.GET.get("name")
