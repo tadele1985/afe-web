@@ -1,4 +1,5 @@
-from corsheaders.defaults import default_headers
+Add the LOGGING config to the bottom of your settings.py. Here's the complete file with it added:
+pythonfrom corsheaders.defaults import default_headers
 import dj_database_url
 from pathlib import Path
 import os
@@ -73,7 +74,6 @@ MIDDLEWARE = [
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
-
 if DEV:
     MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
 
@@ -103,13 +103,13 @@ WSGI_APPLICATION = "afe.wsgi.application"
 
 # Database
 if os.environ.get('DATABASE_URL'):
-   DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True,
-    )
-}
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
 else:
     DATABASES = {
         "default": {
@@ -189,13 +189,14 @@ if DEV:
     CSRF_TRUSTED_ORIGINS = [
         "http://localhost:8000",
         "http://127.0.0.1:8000",
-]
+    ]
 else:
     CSRF_TRUSTED_ORIGINS = [
         "https://afe-femis.com",
         "https://femis.sourcecognize.com",
         "https://afefemis.onrender.com",
-]
+    ]
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Forms
@@ -206,3 +207,37 @@ FORM_RENDERER = "afe.settings.CustomFormRenderer"
 
 JAZZMIN_SETTINGS = {"language_chooser": True}
 DEFAULT_CHARSET = "utf-8"
+
+# Logging — prints full tracebacks to Render console
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{levelname}] {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
