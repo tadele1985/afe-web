@@ -1,5 +1,4 @@
-Add the LOGGING config to the bottom of your settings.py. Here's the complete file with it added:
-pythonfrom corsheaders.defaults import default_headers
+from corsheaders.defaults import default_headers
 import dj_database_url
 from pathlib import Path
 import os
