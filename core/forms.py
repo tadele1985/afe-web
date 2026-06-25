@@ -35,9 +35,8 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 
 def get_amharic_datestr(value):
     tmp = EthiopianDateConverter.date_to_ethiopian(value)
-    date_str = f"{tmp[0]}-{tmp[1]}-{tmp[2]}"
+    date_str = f"{tmp.year}-{tmp.month}-{tmp.day}"
     date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-    print(f"Afe Date Input Widget2: {date_obj} for {value}")
     return date_obj.strftime("%d/%m/%Y")
 
 
