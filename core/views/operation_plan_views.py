@@ -293,7 +293,6 @@ class OperationPlanFilter(FilterSet):
         return queryset.filter(start_year__gte=start_year, end_year__lte=end_year)
 
     def ethiopian_year_filter(self, queryset, name, value):
-        # gregorian_year = ethiopian_year_to_gregorian(int(value))
         start_year = EthiopianDateConverter.to_gregorian(int(value) - 1, 11, 1)
         return queryset.filter(**{name: start_year})
 
@@ -322,17 +321,23 @@ class OperationPlanFilter(FilterSet):
             role__code="BRANCH_DATA_ANALYST", user=user
         ).exists():
             return parent
+
+        if user.location is None:
+            messages.error(
+                self.request,
+                "User has a role Branch Data Analyst but has no location assigned",
+            )
+            return parent.none()
+
         if user.location.type != "BRANCH":
             messages.error(
                 self.request,
                 "User has a role Branch Data Analyst, however is assigned to a location that isn't a branch",
             )
-            return None
+            return parent.none()
 
         locations = user.location.get_all_children()
         return parent.filter(location__in=locations)
-
-
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     role_required(
