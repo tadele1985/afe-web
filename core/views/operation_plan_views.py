@@ -1219,9 +1219,3 @@ class OperationPlanDuplicateView(UpdateView):
     def get_success_url(self) -> str:
         return self.request.META.get("HTTP_REFERER")
 
-forms.py — only get_amharic_datestr changes, replace just that function:
-pythondef get_amharic_datestr(value):
-    tmp = EthiopianDateConverter.date_to_ethiopian(value)
-    date_str = f"{tmp.year}-{tmp.month}-{tmp.day}"
-    date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-    return date_obj.strftime("%d/%m/%Y")
