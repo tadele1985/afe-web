@@ -1,5 +1,4 @@
-Here is the complete fixed configuration_views.py:
-pythonfrom django.contrib import messages
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect, render
