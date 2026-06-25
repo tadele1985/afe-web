@@ -224,10 +224,8 @@ class OperationPlanTable(tables.Table):
         location = value
         while location is not None and location.type != "BRANCH":
             location = location.parent
-
         if location is None:
             return "-"
-
         return location.name
 
     def render_detail_activities(self, value, record):
@@ -338,6 +336,8 @@ class OperationPlanFilter(FilterSet):
 
         locations = user.location.get_all_children()
         return parent.filter(location__in=locations)
+
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     role_required(
@@ -461,10 +461,7 @@ def delete_operation_plan(request, uuid):
 
         operation_plan.save()
 
-        messages.success(
-            request,
-            "Operation plan successfully deleted!",
-        )
+        messages.success(request, "Operation plan successfully deleted!")
 
         return htmx_redirect(request)
 
@@ -510,13 +507,9 @@ def finalize_operation_plan(request, uuid):
 
         operation_plan.stage = "FINAL"
         operation_plan.updatedDate = timezone.now()
-
         operation_plan.save()
 
-        messages.success(
-            request,
-            "Operation plan successfully finalized!",
-        )
+        messages.success(request, "Operation plan successfully finalized!")
 
         return htmx_redirect(request)
 
@@ -618,9 +611,7 @@ def upload_operation_plans(request):
             activity_type, created = ActivityType.objects.get_or_create(
                 name=row[3].strip()
             )
-
             activity_type.operation_types.add(operation_type)
-
             activity_type.save()
 
             detail_activity_type, created = DetailActivityType.objects.get_or_create(
@@ -700,7 +691,6 @@ def upload_location_tree(request):
                     hq = location_creation_map["HQ"][row[0].strip()]
                 else:
                     location_objects.append(hq)
-
                 location_creation_map["HQ"][row[0].strip()] = hq
 
             if row[1]:
@@ -824,7 +814,6 @@ def upload_resource_types(request):
 
             resource_type.sectors.add(sector)
             resource_type.operation_types.add(operation_type)
-
             resource_type.save()
 
         messages.success(request, "Successfully Imported!")
@@ -847,7 +836,6 @@ def upload_sub_activity_types(request):
                     name=ac_type
                 )
                 sub_activity.activites.add(activity)
-
                 sub_activity.save()
 
         messages.success(request, "Successfully Imported!")
@@ -865,7 +853,6 @@ def upload_annual_plan_metadata(request):
             row = [value for key, value in rows.items()]
             detail_activity_type = DetailActivityType.objects.get(name=row[0])
             resource_type = ActivityResourceType.objects.get(name=row[1])
-
             detail_activity_type.annual_resource_type = resource_type
             detail_activity_type.save()
 
@@ -907,23 +894,19 @@ class ActivityPlanTable(tables.Table):
         )
 
     def render_date_range(self, record):
-        start_date = EthiopianDateConverter.date_to_ethiopian(record.start_date)
-        end_date = EthiopianDateConverter.date_to_ethiopian(record.end_date)
-        return f"{start_date[2]} {get_amharic_month(start_date[1])} {start_date[0]} - {end_date[2]} {get_amharic_month(end_date[1])} {end_date[0]}"
-        # date_range = (
-        #     record.start_date.strftime("%d %b %Y")
-        #     + " - "
-        #     + record.end_date.strftime("%d %b %Y")
-        # )
-        # return date_range
+        try:
+            start_date = EthiopianDateConverter.date_to_ethiopian(record.start_date)
+            end_date = EthiopianDateConverter.date_to_ethiopian(record.end_date)
+            return (
+                f"{start_date.day} {get_amharic_month(start_date.month)} {start_date.year}"
+                f" - "
+                f"{end_date.day} {get_amharic_month(end_date.month)} {end_date.year}"
+            )
+        except Exception:
+            return "-"
 
 
 class ActionPlanFilter(FilterSet):
-    # start_date = django_filters.DateFilter(field_name="start_date", label="Start Date")
-    # end_date = django_filters.DateFilter(
-    #     field_name="end_date", lookup_expr="end_date", method="ethiopian_year_filter", label="End Date"
-    # )
-
     class Meta:
         model = ActivityPlan
         fields = ["type", "assignee", "status", "start_date", "end_date"]
@@ -1229,17 +1212,16 @@ class OperationPlanDuplicateView(UpdateView):
                                     payment=resource.payment,
                                 )
                                 new_resource.save()
-                                # actual_resources = ActualActivityResource.objects.filter(activity_resource=resource)
-                                # for actual in actual_resources:
-                                #     new_actual = ActualActivityResource(
-                                #         activity_resource = new_resource,
-                                #         work_norm = resource.work_norm,
-                                #         achievement = resource.achievement,
-                                #         payment = resource.payment
-                                #     )
 
         messages.success(self.request, "Operation plan successfully duplicated!")
         return htmx_redirect(self.request)
 
     def get_success_url(self) -> str:
         return self.request.META.get("HTTP_REFERER")
+
+forms.py — only get_amharic_datestr changes, replace just that function:
+pythondef get_amharic_datestr(value):
+    tmp = EthiopianDateConverter.date_to_ethiopian(value)
+    date_str = f"{tmp.year}-{tmp.month}-{tmp.day}"
+    date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    return date_obj.strftime("%d/%m/%Y")
