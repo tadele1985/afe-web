@@ -116,7 +116,7 @@ def get_locations(request: HttpRequest):
     elif end_location == "Nursery":
         location_type_name = "NURSERY"
     elif end_location == "Sawmill":
-        location_type_name == "SAWMILL"
+        location_type_name = "SAWMILL"
     elif end_location == "Seed source":
         location_type_name = "SEED_SOURCE"
     elif end_location == "Forest establishment":
@@ -134,9 +134,12 @@ def get_locations(request: HttpRequest):
 def get_multi_select_locations(request: HttpRequest):
     location_type = request.GET.get("type")
     end_location = request.GET.get("end_location")
-    locations = Location.objects.filter(
-        parent__id__in=request.GET.getlist(location_type.lower())
-    )
+    # Filter out blank/placeholder values before UUID lookup
+    raw_ids = [v for v in request.GET.getlist(location_type.lower()) if v]
+    if not raw_ids:
+        html = get_option_html([], name="Select location")
+        return HttpResponse(html, content_type="text/html")
+    locations = Location.objects.filter(parent__id__in=raw_ids)
 
     location_type_name = ""
     if end_location in ["Forest site", "Block", "Compartment", "Sub compartment"]:

@@ -15,7 +15,7 @@
             multiple
             {% if locations|next:forloop.counter0 %} hx-trigger="change" hx-swap="innerHTML" hx-target="#{{ locations|next:forloop.counter0|lower|underscore }}_id" hx-get="{% url 'core:get_multi_select_locations' %}?type={{ location }}&end_location={{ end_location }}" {% endif %}>
       {% if location == "HQ" %}
-        <option>{% trans "Select location" %}</option>
+        <option value="">{% trans "Select location" %}</option>
         {% for option in options %}
           <option value="{{ option.id }}"
                   {% if selected_location_list %}{% if selected_location_list|get_item:"HQ"|get_item:"selected" == option.id %}selected{% endif %}
@@ -30,7 +30,7 @@
             </option>
           {% endfor %}
         {% else %}
-          <option>{% trans "Select location" %}</option>
+          <option value="">{% trans "Select location" %}</option>
         {% endif %}
       {% endif %}
     </select>
